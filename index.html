@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samhita skin - Ayurvedic Skincare & Haircare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Intro Animation Styles */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeOut 0.5s ease-in-out 3s forwards;
+        }
+
+        .bottle-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            perspective: 1000px;
+        }
+
+        .bottle-3d {
+            width: 200px;
+            height: 300px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-style: preserve-3d;
+            animation: fadeInRotate 3s ease-in-out;
+        }
+
+        .bottle-body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #d4a574, #c49660, #d4a574);
+            border-radius: 20px 20px 40px 40px;
+            position: relative;
+            box-shadow:
+                0 20px 40px rgba(0,0,0,0.2),
+                inset -10px 0 20px rgba(0,0,0,0.1),
+                inset 10px 0 20px rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+        }
+
+        .bottle-body::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(145deg, #d4a574, #c49660);
+            border-radius: 8px 8px 0 0;
+            z-index: 5;
+        }
+
+        .bottle-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .bottle-cap {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 50px;
+            background: linear-gradient(145deg, #2f855a, #38a169, #2f855a);
+            border-radius: 15px 15px 8px 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            z-index: 10;
+        }
+
+        .bottle-cap::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+        }
+
+        .bottle-cap::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65px;
+            height: 8px;
+            background: linear-gradient(145deg, #276749, #2f855a);
+            border-radius: 0 0 4px 4px;
+        }
+
+        .bottle-reflection {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+            border-radius: 20px 20px 40px 40px;
+            animation: reflectionSweep 2s ease-in-out 0.5s;
+            opacity: 0;
+        }
+
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #d4a574, #f7d794);
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        .particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0.5s; }
+        .particle:nth-child(2) { top: 30%; right: 15%; animation-delay: 0.8s; }
+        .particle:nth-child(3) { top: 50%; left: 5%; animation-delay: 1.1s; }
+        .particle:nth-child(4) { top: 60%; right: 10%; animation-delay: 1.4s; }
+        .particle:nth-child(5) { top: 80%; left: 20%; animation-delay: 1.7s; }
+        .particle:nth-child(6) { top: 70%; right: 25%; animation-delay: 2s; }
+        .particle:nth-child(7) { top: 40%; left: 25%; animation-delay: 2.3s; }
+        .particle:nth-child(8) { top: 85%; right: 5%; animation-delay: 2.6s; }
+
+        .botanical-outlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .leaf {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+            animation: leafFloat 3s ease-in-out infinite;
+        }
+
+        .leaf-1 { top: 15%; left: 15%; animation-delay: 1s; }
+        .leaf-2 { top: 25%; right: 20%; animation-delay: 1.5s; }
+        .leaf-3 { bottom: 30%; left: 10%; animation-delay: 2s; }
+        .leaf-4 { bottom: 20%; right: 15%; animation-delay: 2.5s; }
+
+        @keyframes fadeInRotate {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5) rotateY(0deg);
+            }
+            30% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotateY(360deg);
+            }
+        }
+
+        @keyframes reflectionSweep {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(0%);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(0px);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes leafFloat {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                opacity: 0.7;
+                transform: translateY(-15px) rotate(10deg);
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                visibility: visible;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, #e6f7e1 0%, #f7f3e9 100%);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            animation: headerFadeIn 0.5s ease-in-out 3.5s forwards;
+        }
+
+        @keyframes headerFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2f855a;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #2f855a;
+        }
+
+        .cart-icon {
+            background: #48bb78;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .cart-icon:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #e6f7e1 0%, #f7f3e9 50%, #faf5e6 100%);
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100%;
+            opacity: 0;
+            animation: heroFadeIn 0.8s ease-in-out 3.2s forwards;
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2348bb78' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-product {
+            width: 300px;
+            height: 400px;
+            margin: 0 auto 2rem;
+            position: relative;
+            perspective: 1000px;
+            animation: heroBottleFadeIn 2s ease-out 0.5s both;
+        }
+
+        .bottle-3d-hero {
+            width: 200px;
+            height: 350px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-style: preserve-3d;
+            animation: gentleRotate 12s linear infinite;
+        }
+
+        .bottle-cylinder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #d4a574 0%, #c49660 50%, #d4a574 100%);
+            border-radius: 15px 15px 30px 30px;
+            position: relative;
+            box-shadow:
+                0 25px 50px rgba(0,0,0,0.2),
+                inset -15px 0 30px rgba(0,0,0,0.1),
+                inset 15px 0 30px rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .bottle-cylinder::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 30px;
+            background: linear-gradient(145deg, #d4a574, #c49660);
+            border-radius: 12px 12px 0 0;
+            z-index: 5;
+        }
+
+        .bottle-label-hero {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .bottle-cap-hero {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(145deg, #2f855a, #38a169, #2f855a);
+            border-radius: 18px 18px 10px 10px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+            z-index: 10;
+        }
+
+        .bottle-cap-hero::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 6px;
+        }
+
+        .bottle-cap-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 75px;
+            height: 12px;
+            background: linear-gradient(145deg, #276749, #2f855a);
+            border-radius: 0 0 6px 6px;
+        }
+
+        .bottle-reflection-hero {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            border-radius: 15px 15px 30px 30px;
+            animation: reflectionSweepHero 3s ease-in-out 1s;
+            opacity: 0;
+        }
+
+        .particles-hero {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle-hero {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, #d4a574, #f7d794);
+            border-radius: 50%;
+            animation: particleFloatHero 4s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        .particle-hero:nth-child(1) { top: 15%; left: 15%; animation-delay: 0.5s; }
+        .particle-hero:nth-child(2) { top: 25%; right: 20%; animation-delay: 1s; }
+        .particle-hero:nth-child(3) { top: 45%; left: 10%; animation-delay: 1.5s; }
+        .particle-hero:nth-child(4) { top: 65%; right: 15%; animation-delay: 2s; }
+        .particle-hero:nth-child(5) { top: 80%; left: 25%; animation-delay: 2.5s; }
+        .particle-hero:nth-child(6) { top: 35%; right: 25%; animation-delay: 3s; }
+
+        .botanical-hero {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .leaf-hero {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0;
+            animation: leafFloatHero 5s ease-in-out infinite;
+        }
+
+        .leaf-hero-1 { top: 10%; left: 10%; animation-delay: 1s; }
+        .leaf-hero-2 { top: 20%; right: 15%; animation-delay: 2s; }
+        .leaf-hero-3 { bottom: 25%; left: 5%; animation-delay: 3s; }
+        .leaf-hero-4 { bottom: 15%; right: 10%; animation-delay: 4s; }
+
+        @keyframes heroBottleFadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes gentleRotate {
+            0% {
+                transform: translate(-50%, -50%) rotateY(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotateY(360deg);
+            }
+        }
+
+        @keyframes reflectionSweepHero {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(0%);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        @keyframes particleFloatHero {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(0px) scale(0.8);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(-25px) scale(1.2);
+            }
+        }
+
+        @keyframes leafFloatHero {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                opacity: 0.6;
+                transform: translateY(-20px) rotate(15deg);
+            }
+        }
+
+        .hero-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 600;
+            color: #2f855a;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(72, 187, 120, 0.4);
+        }
+
+        /* Product Highlight Section */
+        .product-highlight {
+            padding: 4rem 0;
+            background: white;
+            position: relative;
+            z-index: 10;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #2f855a;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .product-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .product-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: #2f855a;
+            margin-bottom: 1rem;
+        }
+
+        .product-subtitle {
+            color: #d4a574;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .ingredient-card {
+            background: #f7f3e9;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .ingredient-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .ingredient-icon {
+            width: 50px;
+            height: 50px;
+            background: #48bb78;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* About Section */
+        .about-section {
+            background: linear-gradient(135deg, #f7f3e9 0%, #e6f7e1 100%);
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 20c-16.569 0-30 13.431-30 30s13.431 30 30 30 30-13.431 30-30-13.431-30-30-30zm0 5c13.807 0 25 11.193 25 25s-11.193 25-25 25-25-11.193-25-25 11.193-25 25-25z' fill='%2348bb78' fill-opacity='0.03'/%3E%3C/svg%3E");
+        }
+
+        .about-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .reviews-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .review-card {
+            background: #f7f3e9;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .reviewer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .stars {
+            color: #d4a574;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2f855a, #38a169);
+            color: white;
+            padding: 2rem 0 1rem;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 10c-5 0-10 2-15 5l10 15c2-1 3-2 5-2s3 1 5 2l10-15c-5-3-10-5-15-5zm-20 15c-3 5-5 10-5 15s2 10 5 15l15-10c-1-2-2-3-2-5s1-3 2-5l-15-10zm40 0l-15 10c1 2 2 3 2 5s-1 3-2 5l15 10c3-5 5-10 5-15s-2-10-5-15zm-20 20c-3 0-5 2-5 5s2 5 5 5 5-2 5-5-2-5-5-5zm-15 20l-10 15c5 3 10 5 15 5s10-2 15-5l-10-15c-2 1-3 2-5 2s-3-1-5-2z' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            align-items: start;
+            text-align: left;
+        }
+
+        .footer-section {
+            margin-bottom: 0;
+        }
+
+        .footer-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: #c6f6d5;
+        }
+
+        .footer-section p {
+            margin: 0.3rem 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.8rem;
+            margin: 0.8rem 0;
+        }
+
+        .social-link {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.6rem;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .hashtags {
+            color: #c6f6d5;
+            font-style: italic;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .footer-bottom {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease;
+        }
+
+        .slide-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease;
+        }
+
+        .slide-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.8s ease;
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Stagger animation for ingredient cards */
+        .ingredient-card {
+            background: #f7f3e9;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .ingredient-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ingredient-card:nth-child(1) { transition-delay: 0.1s; }
+        .ingredient-card:nth-child(2) { transition-delay: 0.2s; }
+        .ingredient-card:nth-child(3) { transition-delay: 0.3s; }
+        .ingredient-card:nth-child(4) { transition-delay: 0.4s; }
+
+        /* Mobile Menu Styles */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #2f855a;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 0 0 15px 15px;
+            z-index: 200;
+        }
+
+        .mobile-menu.active {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 1rem 0;
+        }
+
+        .mobile-menu li {
+            margin: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            border-bottom: 1px solid #f7f3e9;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            background: #f7f3e9;
+            color: #2f855a;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+                position: relative;
+            }
+
+            .hero {
+                padding: 2rem 0;
+            }
+
+            .hero-content {
+                padding: 0 1rem;
+            }
+
+            .hero-product {
+                width: 250px;
+                height: 320px;
+                margin: 0 auto 1.5rem;
+            }
+
+            .bottle-3d-hero {
+                width: 160px;
+                height: 280px;
+            }
+
+            .bottle-label-hero {
+                font-size: 0.85rem;
+                padding: 1rem;
+            }
+
+            .bottle-cap-hero {
+                width: 65px;
+                height: 45px;
+                top: -28px;
+            }
+
+            .bottle-cap-hero::before {
+                width: 45px;
+                height: 8px;
+                top: 8px;
+            }
+
+            .bottle-cap-hero::after {
+                width: 60px;
+                height: 8px;
+                bottom: -6px;
+            }
+
+            .leaf-hero {
+                font-size: 2rem;
+            }
+
+            .particle-hero {
+                width: 4px;
+                height: 4px;
+            }
+
+            .hero-text {
+                font-size: 1.8rem;
+                line-height: 1.3;
+                margin-bottom: 1rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+
+            .cta-button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .product-showcase {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .product-info {
+                order: 2;
+            }
+
+            .product-info h3 {
+                font-size: 1.6rem;
+            }
+
+            .product-info p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .ingredients-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                margin: 1.5rem 0;
+            }
+
+            .ingredient-card {
+                padding: 0.8rem;
+            }
+
+            .ingredient-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .ingredient-card h4 {
+                font-size: 0.9rem;
+                margin: 0.5rem 0 0.3rem;
+            }
+
+            .ingredient-card p {
+                font-size: 0.8rem;
+                margin: 0;
+            }
+
+            .fade-in[style*="display: flex"] {
+                flex-direction: column;
+                gap: 0.8rem !important;
+                align-items: center;
+            }
+
+            .fade-in[style*="display: flex"] .cta-button {
+                width: 200px;
+                text-align: center;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .about-section {
+                padding: 3rem 0;
+            }
+
+            .about-text {
+                font-size: 1rem;
+                line-height: 1.7;
+            }
+
+            .reviews-section {
+                padding: 3rem 0;
+            }
+
+            .reviews-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .review-card {
+                padding: 1.5rem;
+            }
+
+            .reviewer-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .review-card h4 {
+                font-size: 1rem;
+            }
+
+            .review-card p {
+                font-size: 0.9rem;
+            }
+
+            .footer {
+                padding: 2rem 0 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-section {
+                margin-bottom: 1rem;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .footer-bottom {
+                margin-top: 1rem;
+                padding-top: 1rem;
+            }
+
+            .footer-bottom p {
+                font-size: 0.8rem;
+                line-height: 1.5;
+            }
+
+            /* Intro animation mobile adjustments */
+            .intro-overlay .bottle-container {
+                width: 250px;
+                height: 320px;
+            }
+
+            .intro-overlay .bottle-3d {
+                width: 160px;
+                height: 240px;
+            }
+
+            .intro-overlay .bottle-label {
+                font-size: 0.85rem;
+                padding: 0.8rem;
+            }
+
+            .intro-overlay .bottle-cap {
+                width: 55px;
+                height: 35px;
+                top: -18px;
+            }
+
+            .intro-overlay .leaf {
+                font-size: 1.5rem;
+            }
+
+            .intro-overlay .particle {
+                width: 3px;
+                height: 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.6rem;
+            }
+
+            .cart-icon {
+                padding: 0.6rem;
+                font-size: 1rem;
+            }
+
+            .hero-product {
+                width: 200px;
+                height: 280px;
+            }
+
+            .bottle-3d-hero {
+                width: 140px;
+                height: 240px;
+            }
+
+            .bottle-label-hero {
+                font-size: 0.75rem;
+                padding: 0.8rem;
+            }
+
+            .bottle-label-hero h3 {
+                font-size: 0.95rem;
+            }
+
+            .bottle-label-hero p {
+                font-size: 0.8rem;
+            }
+
+            .hero-text {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .product-info h3 {
+                font-size: 1.4rem;
+            }
+
+            .ingredients-grid {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .ingredient-card {
+                padding: 1rem;
+            }
+
+            .ingredient-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+
+            .fade-in[style*="display: flex"] .cta-button {
+                width: 180px;
+                padding: 0.7rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            /* Intro animation small mobile adjustments */
+            .intro-overlay .bottle-container {
+                width: 200px;
+                height: 280px;
+            }
+
+            .intro-overlay .bottle-3d {
+                width: 140px;
+                height: 200px;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .cta-button:hover {
+                transform: none;
+                box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+            }
+
+            .ingredient-card:hover {
+                transform: none;
+            }
+
+            .review-card:hover {
+                transform: none;
+            }
+
+            .social-link:hover {
+                transform: none;
+                background: rgba(255,255,255,0.2);
+            }
+
+            .cart-icon:hover {
+                transform: none;
+                background: #48bb78;
+            }
+
+            /* Add active states for touch */
+            .cta-button:active {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
+            }
+
+            .ingredient-card:active {
+                transform: translateY(-2px);
+            }
+
+            .social-link:active {
+                background: rgba(255,255,255,0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Animation -->
+    <div class="intro-overlay" id="introOverlay">
+        <div class="bottle-container">
+            <div class="bottle-3d">
+                <div class="bottle-body">
+                    <div class="bottle-label">3D Model of Hair Oil Bottle</div>
+                    <div class="bottle-cap"></div>
+                    <div class="bottle-reflection"></div>
+                </div>
+            </div>
+            <div class="particles-container">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+            <div class="botanical-outlines">
+                <div class="leaf leaf-1">🍃</div>
+                <div class="leaf leaf-2">🌿</div>
+                <div class="leaf leaf-3">🍃</div>
+                <div class="leaf leaf-4">🌿</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="nav-container">
+            <a href="#" class="logo">Samhita skin</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+                <a href="#cart" class="cart-icon">🛒</a>
+            </div>
+            <div class="mobile-menu" id="mobileMenu">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-product">
+                <div class="bottle-3d-hero">
+                    <div class="bottle-cylinder">
+                        <div class="bottle-label-hero">3D Model of Hair Oil Bottle</div>
+                        <div class="bottle-cap-hero"></div>
+                        <div class="bottle-reflection-hero"></div>
+                    </div>
+                </div>
+                <div class="particles-hero">
+                    <div class="particle-hero"></div>
+                    <div class="particle-hero"></div>
+                    <div class="particle-hero"></div>
+                    <div class="particle-hero"></div>
+                    <div class="particle-hero"></div>
+                    <div class="particle-hero"></div>
+                </div>
+                <div class="botanical-hero">
+                    <div class="leaf-hero leaf-hero-1">🍃</div>
+                    <div class="leaf-hero leaf-hero-2">🌿</div>
+                    <div class="leaf-hero leaf-hero-3">🍃</div>
+                    <div class="leaf-hero leaf-hero-4">🌿</div>
+                </div>
+            </div>
+            <h1 class="hero-text">Healthy scalp, stronger roots, natural shine</h1>
+            <p class="hero-subtitle">Ancient wisdom meets modern care <span>🌿</span></p>
+            <a href="#products" class="cta-button">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Product Highlight -->
+    <section class="product-highlight" id="products">
+        <div class="container">
+            <h2 class="section-title fade-in">Featured Product</h2>
+            <div class="product-showcase">
+                <div class="product-info slide-in-left">
+                    <h3>Keshamrut Hair Oil</h3>
+                    <p class="product-subtitle">By Kshirpak Vidhi</p>
+                    <p>Experience the power of authentic Ayurvedic hair care with our signature Keshamrut Hair Oil. Crafted using traditional Kshirpak Vidhi, this premium formula nourishes your scalp and strengthens hair from root to tip.</p>
+
+                    <div class="ingredients-grid">
+                        <div class="ingredient-card">
+                            <div class="ingredient-icon">🫐</div>
+                            <h4>Amla</h4>
+                            <p>Vitamin C rich</p>
+                        </div>
+                        <div class="ingredient-card">
+                            <div class="ingredient-icon">🌿</div>
+                            <h4>Bhringraj</h4>
+                            <p>Hair growth</p>
+                        </div>
+                        <div class="ingredient-card">
+                            <div class="ingredient-icon">🍃</div>
+                            <h4>Neem</h4>
+                            <p>Scalp health</p>
+                        </div>
+                        <div class="ingredient-card">
+                            <div class="ingredient-icon">🌱</div>
+                            <h4>Brahmi</h4>
+                            <p>Strengthening</p>
+                        </div>
+                    </div>
+
+                    <div class="fade-in" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                        <button class="cta-button" onclick="alert('Added to cart! 🛒')">Add to Cart</button>
+                        <button class="cta-button" style="background: linear-gradient(135deg, #d4a574, #c49660);" onclick="alert('Learn more about our Ayurvedic process!')">Learn More</button>
+                    </div>
+                </div>
+                <div class="slide-in-right" style="text-align: center;">
+                    <div class="hero-product">
+                        <div class="bottle-3d-hero">
+                            <div class="bottle-cylinder">
+                                <div class="bottle-label-hero">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌿</div>
+                                    <h3 style="margin: 0; font-size: 1.1rem;">Keshamrut Hair Oil</h3>
+                                    <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">100ml Premium Formula</p>
+                                </div>
+                                <div class="bottle-cap-hero"></div>
+                                <div class="bottle-reflection-hero"></div>
+                            </div>
+                        </div>
+                        <div class="particles-hero">
+                            <div class="particle-hero"></div>
+                            <div class="particle-hero"></div>
+                            <div class="particle-hero"></div>
+                            <div class="particle-hero"></div>
+                            <div class="particle-hero"></div>
+                            <div class="particle-hero"></div>
+                        </div>
+                        <div class="botanical-hero">
+                            <div class="leaf-hero leaf-hero-1">🍃</div>
+                            <div class="leaf-hero leaf-hero-2">🌿</div>
+                            <div class="leaf-hero leaf-hero-3">🍃</div>
+                            <div class="leaf-hero leaf-hero-4">🌿</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Ayurveda -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="section-title fade-in">About Ayurveda</h2>
+                <p class="about-text fade-in">
+                    At Samhita skin, we blend ancient Ayurvedic wisdom with modern care to bring you natural, effective hair solutions. Each formula is crafted using Kshirpak Vidhi — an authentic Ayurvedic process for deep nourishment. Our commitment to traditional methods ensures that every drop of our products carries the healing power of nature.
+                </p>
+                <div class="scale-in" style="font-size: 3rem; margin: 2rem 0;">🪷</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Reviews -->
+    <section class="reviews-section">
+        <div class="container">
+            <h2 class="section-title fade-in">What Our Customers Say</h2>
+            <div class="reviews-container">
+                <div class="review-card fade-in">
+                    <div class="reviewer">
+                        <div class="reviewer-avatar">P</div>
+                        <div>
+                            <h4>Priya Sharma</h4>
+                            <p style="margin: 0; color: #666;">Verified Buyer</p>
+                        </div>
+                    </div>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Amazing results! My hair feels so much stronger and shinier after just 3 weeks of using Keshamrut Hair Oil. The natural ingredients really make a difference."</p>
+                </div>
+
+                <div class="review-card fade-in">
+                    <div class="reviewer">
+                        <div class="reviewer-avatar">A</div>
+                        <div>
+                            <h4>Anita Patel</h4>
+                            <p style="margin: 0; color: #666;">Verified Buyer</p>
+                        </div>
+                    </div>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Love the authentic Ayurvedic approach! No more scalp irritation and my hair growth has improved significantly. Highly recommend Samhita skin products."</p>
+                </div>
+
+                <div class="review-card fade-in">
+                    <div class="reviewer">
+                        <div class="reviewer-avatar">R</div>
+                        <div>
+                            <h4>Rajesh Kumar</h4>
+                            <p style="margin: 0; color: #666;">Verified Buyer</p>
+                        </div>
+                    </div>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p>"The quality is exceptional! You can feel the difference from the first application. The traditional Kshirpak Vidhi process really shows in the results."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <p>📞 +91 9970681145</p>
+                    <p>✉️ hello@samhitaskin</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="https://instagram.com/samhitaskin" target="_blank" rel="noopener noreferrer" class="social-link">📷</a>
+                        <a href="#" class="social-link">📘</a>
+                        <a href="#" class="social-link">🐦</a>
+                    </div>
+                    <p>Instagram: @SamhitaSkin</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Our Products</h4>
+                    <p>Keshamrut Hair Oil</p>
+                    <p>Ayurvedic Skincare</p>
+                    <p>Natural Haircare</p>
+                </div>
+
+
+
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Samhita skin. All rights reserved. | Crafted with ancient wisdom 🌿</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in, .ingredient-card');
+            animatedElements.forEach(el => observer.observe(el));
+        });
+
+        // Add subtle parallax effect to hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero');
+            if (parallax && scrolled < window.innerHeight) {
+                const speed = scrolled * 0.3;
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+        });
+
+        // Enhanced hover effects for ingredient cards
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.ingredient-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    if (this.classList.contains('visible')) {
+                        this.style.transform = 'translateY(-10px) scale(1.05)';
+                        this.style.boxShadow = '0 15px 35px rgba(72, 187, 120, 0.2)';
+                    }
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    if (this.classList.contains('visible')) {
+                        this.style.transform = 'translateY(0) scale(1)';
+                        this.style.boxShadow = 'none';
+                    }
+                });
+            });
+        });
+
+        // Add floating animation to hero product
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroProduct = document.querySelector('.hero-product');
+            if (heroProduct) {
+                let floatDirection = 1;
+                setInterval(() => {
+                    const currentTransform = heroProduct.style.transform || '';
+                    const translateY = Math.sin(Date.now() * 0.001) * 10;
+                    heroProduct.style.transform = `translateY(${translateY}px)`;
+                }, 50);
+            }
+        });
+
+        // Handle intro animation completion
+        document.addEventListener('DOMContentLoaded', () => {
+            const introOverlay = document.getElementById('introOverlay');
+
+            // Remove intro overlay after animation completes
+            setTimeout(() => {
+                if (introOverlay) {
+                    introOverlay.remove();
+                }
+            }, 4000);
+        });
+
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            if (mobileMenuToggle && mobileMenu) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('active');
+
+                    // Change hamburger to X when open
+                    if (mobileMenu.classList.contains('active')) {
+                        mobileMenuToggle.innerHTML = '✕';
+                    } else {
+                        mobileMenuToggle.innerHTML = '☰';
+                    }
+                });
+
+                // Close mobile menu when clicking on a link
+                const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.remove('active');
+                        mobileMenuToggle.innerHTML = '☰';
+                    });
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                        mobileMenuToggle.innerHTML = '☰';
+                    }
+                });
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98dc678453c43d1e',t:'MTc2MDMzMzAwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
