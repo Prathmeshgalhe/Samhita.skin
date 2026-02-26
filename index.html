@@ -3,1739 +3,1721 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samhita skin - Ayurvedic Skincare & Haircare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Smart Garbage Collector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            box-sizing: border-box;
+        /* ===== VARIABLES ===== */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --box1: #ff6b6b;
+            --box2: #4ecdc4;
+            --box3: #1dd1a1;
+            --tab-active: #4361ee;
+            --tab-inactive: #6c757d;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            color: var(--dark);
             line-height: 1.6;
-            color: #2d3748;
+        }
+
+        /* ===== APP CONTAINER ===== */
+        .app-container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
             overflow-x: hidden;
         }
 
-        * {
-            box-sizing: border-box;
-        }
-
-        /* Intro Animation Styles */
-        .intro-overlay {
+        /* ===== AUTH SCREEN ===== */
+        .auth-screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
             z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: fadeOut 0.5s ease-in-out 3s forwards;
+            transition: opacity 0.3s ease;
         }
 
-        .bottle-container {
-            position: relative;
-            width: 300px;
-            height: 400px;
-            perspective: 1000px;
+        .auth-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .bottle-3d {
-            width: 200px;
-            height: 300px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transform-style: preserve-3d;
-            animation: fadeInRotate 3s ease-in-out;
-        }
-
-        .bottle-body {
+        .auth-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, #d4a574, #c49660, #d4a574);
-            border-radius: 20px 20px 40px 40px;
-            position: relative;
-            box-shadow:
-                0 20px 40px rgba(0,0,0,0.2),
-                inset -10px 0 20px rgba(0,0,0,0.1),
-                inset 10px 0 20px rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform-style: preserve-3d;
+            max-width: 400px;
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
         }
 
-        .bottle-body::before {
-            content: '';
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 20px;
-            background: linear-gradient(145deg, #d4a574, #c49660);
-            border-radius: 8px 8px 0 0;
-            z-index: 5;
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
-        .bottle-label {
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
+        .auth-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: white;
+            padding: 40px 30px;
             text-align: center;
-            padding: 1rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
         }
 
-        .bottle-cap {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 50px;
-            background: linear-gradient(145deg, #2f855a, #38a169, #2f855a);
-            border-radius: 15px 15px 8px 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            z-index: 10;
+        .auth-header .logo {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: white;
         }
 
-        .bottle-cap::before {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 10px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 5px;
+        .auth-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
 
-        .bottle-cap::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 65px;
-            height: 8px;
-            background: linear-gradient(145deg, #276749, #2f855a);
-            border-radius: 0 0 4px 4px;
+        .auth-header p {
+            font-size: 16px;
+            opacity: 0.9;
         }
 
-        .bottle-reflection {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .auth-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-input {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-            border-radius: 20px 20px 40px 40px;
-            animation: reflectionSweep 2s ease-in-out 0.5s;
-            opacity: 0;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
         }
 
-        .particles-container {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .btn {
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-block {
             width: 100%;
-            height: 100%;
-            pointer-events: none;
         }
 
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: linear-gradient(45deg, #d4a574, #f7d794);
-            border-radius: 50%;
-            animation: particleFloat 3s ease-in-out infinite;
-            opacity: 0;
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
         }
 
-        .particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0.5s; }
-        .particle:nth-child(2) { top: 30%; right: 15%; animation-delay: 0.8s; }
-        .particle:nth-child(3) { top: 50%; left: 5%; animation-delay: 1.1s; }
-        .particle:nth-child(4) { top: 60%; right: 10%; animation-delay: 1.4s; }
-        .particle:nth-child(5) { top: 80%; left: 20%; animation-delay: 1.7s; }
-        .particle:nth-child(6) { top: 70%; right: 25%; animation-delay: 2s; }
-        .particle:nth-child(7) { top: 40%; left: 25%; animation-delay: 2.3s; }
-        .particle:nth-child(8) { top: 85%; right: 5%; animation-delay: 2.6s; }
-
-        .botanical-outlines {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
         }
 
-        .leaf {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0;
-            animation: leafFloat 3s ease-in-out infinite;
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
         }
 
-        .leaf-1 { top: 15%; left: 15%; animation-delay: 1s; }
-        .leaf-2 { top: 25%; right: 20%; animation-delay: 1.5s; }
-        .leaf-3 { bottom: 30%; left: 10%; animation-delay: 2s; }
-        .leaf-4 { bottom: 20%; right: 15%; animation-delay: 2.5s; }
-
-        @keyframes fadeInRotate {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5) rotateY(0deg);
-            }
-            30% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
-            }
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1) rotateY(360deg);
-            }
+        .auth-link {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
         }
 
-        @keyframes reflectionSweep {
-            0% {
-                opacity: 0;
-                transform: translateX(-100%);
-            }
-            50% {
-                opacity: 1;
-                transform: translateX(0%);
-            }
-            100% {
-                opacity: 0;
-                transform: translateX(100%);
-            }
+        .auth-link:hover {
+            text-decoration: underline;
         }
 
-        @keyframes particleFloat {
-            0%, 100% {
-                opacity: 0;
-                transform: translateY(0px);
-            }
-            50% {
-                opacity: 1;
-                transform: translateY(-20px);
-            }
+        /* ===== APP SCREEN ===== */
+        .app-screen {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 80px; /* Space for tab bar */
         }
 
-        @keyframes leafFloat {
-            0%, 100% {
-                opacity: 0;
-                transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-                opacity: 0.7;
-                transform: translateY(-15px) rotate(10deg);
-            }
+        .app-screen.active {
+            display: block;
         }
 
-        @keyframes fadeOut {
-            0% {
-                opacity: 1;
-                visibility: visible;
-            }
-            100% {
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
-
-        /* Header Section */
-        .header {
-            background: linear-gradient(135deg, #e6f7e1 0%, #f7f3e9 100%);
-            padding: 1rem 0;
+        /* Header */
+        .app-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 20px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            opacity: 0;
-            animation: headerFadeIn 0.5s ease-in-out 3.5s forwards;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
-        @keyframes headerFadeIn {
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            font-size: 28px;
+            color: white;
+        }
+
+        .brand-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .brand-text p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
+        /* ===== DASHBOARD TAB ===== */
+        .dashboard-content {
+            padding: 20px;
         }
 
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #2f855a;
-            text-decoration: none;
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: #4a5568;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-menu a:hover {
-            color: #2f855a;
-        }
-
-        .cart-icon {
-            background: #48bb78;
-            color: white;
-            padding: 0.75rem;
-            border-radius: 50%;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
-        }
-
-        .cart-icon:hover {
-            background: #38a169;
-            transform: translateY(-2px);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #e6f7e1 0%, #f7f3e9 50%, #faf5e6 100%);
-            padding: 4rem 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 100%;
-            opacity: 0;
-            animation: heroFadeIn 0.8s ease-in-out 3.2s forwards;
-        }
-
-        @keyframes heroFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2348bb78' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-product {
-            width: 300px;
-            height: 400px;
-            margin: 0 auto 2rem;
-            position: relative;
-            perspective: 1000px;
-            animation: heroBottleFadeIn 2s ease-out 0.5s both;
-        }
-
-        .bottle-3d-hero {
-            width: 200px;
-            height: 350px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transform-style: preserve-3d;
-            animation: gentleRotate 12s linear infinite;
-        }
-
-        .bottle-cylinder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, #d4a574 0%, #c49660 50%, #d4a574 100%);
-            border-radius: 15px 15px 30px 30px;
-            position: relative;
-            box-shadow:
-                0 25px 50px rgba(0,0,0,0.2),
-                inset -15px 0 30px rgba(0,0,0,0.1),
-                inset 15px 0 30px rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .bottle-cylinder::before {
-            content: '';
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 30px;
-            background: linear-gradient(145deg, #d4a574, #c49660);
-            border-radius: 12px 12px 0 0;
-            z-index: 5;
-        }
-
-        .bottle-label-hero {
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-            color: white;
-            text-align: center;
-            padding: 1.5rem;
-            background: rgba(255,255,255,0.15);
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .bottle-cap-hero {
-            position: absolute;
-            top: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 60px;
-            background: linear-gradient(145deg, #2f855a, #38a169, #2f855a);
-            border-radius: 18px 18px 10px 10px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-            z-index: 10;
-        }
-
-        .bottle-cap-hero::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 12px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 6px;
-        }
-
-        .bottle-cap-hero::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 75px;
-            height: 12px;
-            background: linear-gradient(145deg, #276749, #2f855a);
-            border-radius: 0 0 6px 6px;
-        }
-
-        .bottle-reflection-hero {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-            border-radius: 15px 15px 30px 30px;
-            animation: reflectionSweepHero 3s ease-in-out 1s;
-            opacity: 0;
-        }
-
-        .particles-hero {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .particle-hero {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: linear-gradient(45deg, #d4a574, #f7d794);
-            border-radius: 50%;
-            animation: particleFloatHero 4s ease-in-out infinite;
-            opacity: 0;
-        }
-
-        .particle-hero:nth-child(1) { top: 15%; left: 15%; animation-delay: 0.5s; }
-        .particle-hero:nth-child(2) { top: 25%; right: 20%; animation-delay: 1s; }
-        .particle-hero:nth-child(3) { top: 45%; left: 10%; animation-delay: 1.5s; }
-        .particle-hero:nth-child(4) { top: 65%; right: 15%; animation-delay: 2s; }
-        .particle-hero:nth-child(5) { top: 80%; left: 25%; animation-delay: 2.5s; }
-        .particle-hero:nth-child(6) { top: 35%; right: 25%; animation-delay: 3s; }
-
-        .botanical-hero {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .leaf-hero {
-            position: absolute;
-            font-size: 2.5rem;
-            opacity: 0;
-            animation: leafFloatHero 5s ease-in-out infinite;
-        }
-
-        .leaf-hero-1 { top: 10%; left: 10%; animation-delay: 1s; }
-        .leaf-hero-2 { top: 20%; right: 15%; animation-delay: 2s; }
-        .leaf-hero-3 { bottom: 25%; left: 5%; animation-delay: 3s; }
-        .leaf-hero-4 { bottom: 15%; right: 10%; animation-delay: 4s; }
-
-        @keyframes heroBottleFadeIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.8) translateY(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        @keyframes gentleRotate {
-            0% {
-                transform: translate(-50%, -50%) rotateY(0deg);
-            }
-            100% {
-                transform: translate(-50%, -50%) rotateY(360deg);
-            }
-        }
-
-        @keyframes reflectionSweepHero {
-            0% {
-                opacity: 0;
-                transform: translateX(-100%);
-            }
-            50% {
-                opacity: 1;
-                transform: translateX(0%);
-            }
-            100% {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-
-        @keyframes particleFloatHero {
-            0%, 100% {
-                opacity: 0;
-                transform: translateY(0px) scale(0.8);
-            }
-            50% {
-                opacity: 0.8;
-                transform: translateY(-25px) scale(1.2);
-            }
-        }
-
-        @keyframes leafFloatHero {
-            0%, 100% {
-                opacity: 0;
-                transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-                opacity: 0.6;
-                transform: translateY(-20px) rotate(15deg);
-            }
-        }
-
-        .hero-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            font-weight: 600;
-            color: #2f855a;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .hero-subtitle {
-            font-size: 1.2rem;
-            color: #4a5568;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .cta-button {
-            background: linear-gradient(135deg, #48bb78, #38a169);
-            color: white;
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(72, 187, 120, 0.4);
-        }
-
-        /* Product Highlight Section */
-        .product-highlight {
-            padding: 4rem 0;
+        .stat-card {
             background: white;
-            position: relative;
-            z-index: 10;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #e0e0e0;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Box Status */
+        .boxes-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
         }
 
         .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: #2f855a;
-            text-align: center;
-            margin-bottom: 3rem;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .product-showcase {
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .boxes-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .box-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            transition: transform 0.3s;
+        }
+
+        .box-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .box-card.box1 {
+            border-top: 4px solid var(--box1);
+        }
+
+        .box-card.box2 {
+            border-top: 4px solid var(--box2);
+        }
+
+        .box-card.box3 {
+            border-top: 4px solid var(--box3);
+        }
+
+        .box-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .box-type {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .fill-display {
+            margin: 20px 0;
+        }
+
+        .fill-percentage {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .box1 .fill-percentage { color: var(--box1); }
+        .box2 .fill-percentage { color: var(--box2); }
+        .box3 .fill-percentage { color: var(--box3); }
+
+        .fill-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .fill-level {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        .box1 .fill-level { background: var(--box1); }
+        .box2 .fill-level { background: var(--box2); }
+        .box3 .fill-level { background: var(--box3); }
+
+        /* Robot Control */
+        .control-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .power-status {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 16px;
+        }
+
+        .power-status h3 {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .status-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Robot Control Layout */
+        .robot-control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .d-pad {
+            display: grid;
+            grid-template-areas:
+                ". up ."
+                "left center right"
+                ". down .";
+            gap: 12px;
+            justify-items: center;
             align-items: center;
         }
 
-        .product-info h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: #2f855a;
-            margin-bottom: 1rem;
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 15px rgba(67, 97, 238, 0.3);
         }
 
-        .product-subtitle {
-            color: #d4a574;
-            font-style: italic;
-            margin-bottom: 1.5rem;
+        .control-btn:hover {
+            transform: scale(1.05);
         }
 
-        .ingredients-grid {
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .control-btn.up { grid-area: up; }
+        .control-btn.left { grid-area: left; }
+        .control-btn.center { 
+            grid-area: center; 
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+        .control-btn.right { grid-area: right; }
+        .control-btn.down { grid-area: down; }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .action-btn.start {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .action-btn.stop {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* System Controls */
+        .system-controls {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 2rem 0;
+            gap: 12px;
+            margin-top: 20px;
         }
 
-        .ingredient-card {
-            background: #f7f3e9;
-            padding: 1rem;
-            border-radius: 15px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .ingredient-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .ingredient-icon {
-            width: 50px;
-            height: 50px;
-            background: #48bb78;
-            border-radius: 50%;
-            margin: 0 auto 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        /* About Section */
-        .about-section {
-            background: linear-gradient(135deg, #f7f3e9 0%, #e6f7e1 100%);
-            padding: 4rem 0;
-            position: relative;
-        }
-
-        .about-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 20c-16.569 0-30 13.431-30 30s13.431 30 30 30 30-13.431 30-30-13.431-30-30-30zm0 5c13.807 0 25 11.193 25 25s-11.193 25-25 25-25-11.193-25-25 11.193-25 25-25z' fill='%2348bb78' fill-opacity='0.03'/%3E%3C/svg%3E");
-        }
-
-        .about-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .about-text {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: #4a5568;
-            margin-bottom: 2rem;
-        }
-
-        /* Reviews Section */
-        .reviews-section {
-            padding: 4rem 0;
+        .sys-btn {
+            padding: 14px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
             background: white;
-        }
-
-        .reviews-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .review-card {
-            background: #f7f3e9;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .review-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .reviewer {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            margin-bottom: 1rem;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .reviewer-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #48bb78, #38a169);
+        .sys-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Manual separator buttons */
+        .separator-controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .separator-controls h3 {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .separator-btns {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sep-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .sep-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .sep-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== PROFILE TAB ===== */
+        .profile-content {
+            padding: 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--primary);
+            font-size: 32px;
             font-weight: bold;
-            margin-right: 1rem;
+            margin: 0 auto 15px;
         }
 
-        .stars {
-            color: #d4a574;
-            margin-bottom: 1rem;
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
-        /* Footer */
-        .footer {
-            background: linear-gradient(135deg, #2f855a, #38a169);
-            color: white;
-            padding: 2rem 0 1rem;
-            position: relative;
-        }
-
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 10c-5 0-10 2-15 5l10 15c2-1 3-2 5-2s3 1 5 2l10-15c-5-3-10-5-15-5zm-20 15c-3 5-5 10-5 15s2 10 5 15l15-10c-1-2-2-3-2-5s1-3 2-5l-15-10zm40 0l-15 10c1 2 2 3 2 5s-1 3-2 5l15 10c3-5 5-10 5-15s-2-10-5-15zm-20 20c-3 0-5 2-5 5s2 5 5 5 5-2 5-5-2-5-5-5zm-15 20l-10 15c5 3 10 5 15 5s10-2 15-5l-10-15c-2 1-3 2-5 2s-3-1-5-2z' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
-        }
-
-        .footer-content {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            align-items: start;
-            text-align: left;
-        }
-
-        .footer-section {
-            margin-bottom: 0;
-        }
-
-        .footer-section h4 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            margin-bottom: 0.8rem;
-            color: #c6f6d5;
-        }
-
-        .footer-section p {
-            margin: 0.3rem 0;
-            font-size: 0.9rem;
+        .profile-email {
+            font-size: 14px;
             opacity: 0.9;
         }
 
-        .social-links {
-            display: flex;
-            gap: 0.8rem;
-            margin: 0.8rem 0;
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
-        .social-link {
-            background: rgba(255,255,255,0.2);
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-desc {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .profile-form {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section h3 i {
+            color: var(--primary);
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 0.6rem;
-            border-radius: 50%;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            width: 40px;
-            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 20px;
         }
 
-        .social-link:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
+        .action-text h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
         }
 
-        .hashtags {
-            color: #c6f6d5;
-            font-style: italic;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
+        .action-text p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 5px;
         }
 
-        .footer-bottom {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            text-align: center;
-            grid-column: 1 / -1;
-        }
-
-        .footer-bottom p {
-            margin: 0;
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
-
-        /* Animation Classes */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .slide-in-left {
-            opacity: 0;
-            transform: translateX(-50px);
-            transition: all 0.8s ease;
-        }
-
-        .slide-in-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .slide-in-right {
-            opacity: 0;
-            transform: translateX(50px);
-            transition: all 0.8s ease;
-        }
-
-        .slide-in-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .scale-in {
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.8s ease;
-        }
-
-        .scale-in.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Stagger animation for ingredient cards */
-        .ingredient-card {
-            background: #f7f3e9;
-            padding: 1rem;
-            border-radius: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .ingredient-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ingredient-card:nth-child(1) { transition-delay: 0.1s; }
-        .ingredient-card:nth-child(2) { transition-delay: 0.2s; }
-        .ingredient-card:nth-child(3) { transition-delay: 0.3s; }
-        .ingredient-card:nth-child(4) { transition-delay: 0.4s; }
-
-        /* Mobile Menu Styles */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #2f855a;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .mobile-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
+        /* ===== TAB BAR ===== */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
             left: 0;
             right: 0;
             background: white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-radius: 0 0 15px 15px;
-            z-index: 200;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 10px;
+            border-top: 1px solid #e0e0e0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            z-index: 100;
         }
 
-        .mobile-menu.active {
-            display: block;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        .mobile-menu ul {
-            list-style: none;
-            margin: 0;
-            padding: 1rem 0;
-        }
-
-        .mobile-menu li {
-            margin: 0;
-        }
-
-        .mobile-menu a {
-            display: block;
-            padding: 1rem 2rem;
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--tab-inactive);
             text-decoration: none;
-            color: #4a5568;
+            padding: 10px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+            flex: 1;
+            max-width: 100px;
+        }
+
+        .tab-item:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .tab-item.active {
+            color: var(--tab-active);
+        }
+
+        .tab-icon {
+            font-size: 22px;
+        }
+
+        .tab-label {
+            font-size: 12px;
             font-weight: 500;
-            border-bottom: 1px solid #f7f3e9;
-            transition: all 0.3s ease;
         }
 
-        .mobile-menu a:hover {
-            background: #f7f3e9;
-            color: #2f855a;
+        .tab-item.active .tab-icon {
+            color: var(--primary);
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .tab-item.active .tab-label {
+            color: var(--primary);
+        }
+
+        /* ===== NOTIFICATIONS ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            transform: translateX(0);
+        }
+
+        .notification.hidden {
+            transform: translateX(150%);
+            animation: slideOut 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(150%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); }
+            to { transform: translateX(150%); }
+        }
+
+        .notification.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .notification.warning {
+            border-left: 4px solid #FF9800;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .nav-container {
-                padding: 0 1rem;
-                position: relative;
-            }
-
-            .hero {
-                padding: 2rem 0;
-            }
-
-            .hero-content {
-                padding: 0 1rem;
-            }
-
-            .hero-product {
-                width: 250px;
-                height: 320px;
-                margin: 0 auto 1.5rem;
-            }
-
-            .bottle-3d-hero {
-                width: 160px;
-                height: 280px;
-            }
-
-            .bottle-label-hero {
-                font-size: 0.85rem;
-                padding: 1rem;
-            }
-
-            .bottle-cap-hero {
-                width: 65px;
-                height: 45px;
-                top: -28px;
-            }
-
-            .bottle-cap-hero::before {
-                width: 45px;
-                height: 8px;
-                top: 8px;
-            }
-
-            .bottle-cap-hero::after {
-                width: 60px;
-                height: 8px;
-                bottom: -6px;
-            }
-
-            .leaf-hero {
-                font-size: 2rem;
-            }
-
-            .particle-hero {
-                width: 4px;
-                height: 4px;
-            }
-
-            .hero-text {
-                font-size: 1.8rem;
-                line-height: 1.3;
-                margin-bottom: 1rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1rem;
-                margin-bottom: 1.5rem;
-                flex-direction: column;
-                gap: 0.3rem;
-            }
-
-            .cta-button {
-                padding: 0.8rem 2rem;
-                font-size: 1rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-                margin-bottom: 2rem;
-            }
-
-            .product-showcase {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                text-align: center;
-            }
-
-            .product-info {
-                order: 2;
-            }
-
-            .product-info h3 {
-                font-size: 1.6rem;
-            }
-
-            .product-info p {
-                font-size: 0.95rem;
-                line-height: 1.6;
-            }
-
-            .ingredients-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
-                margin: 1.5rem 0;
-            }
-
-            .ingredient-card {
-                padding: 0.8rem;
-            }
-
-            .ingredient-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-
-            .ingredient-card h4 {
-                font-size: 0.9rem;
-                margin: 0.5rem 0 0.3rem;
-            }
-
-            .ingredient-card p {
-                font-size: 0.8rem;
-                margin: 0;
-            }
-
-            .fade-in[style*="display: flex"] {
-                flex-direction: column;
-                gap: 0.8rem !important;
-                align-items: center;
-            }
-
-            .fade-in[style*="display: flex"] .cta-button {
-                width: 200px;
-                text-align: center;
-            }
-
-            .container {
-                padding: 0 1rem;
-            }
-
-            .about-section {
-                padding: 3rem 0;
-            }
-
-            .about-text {
-                font-size: 1rem;
-                line-height: 1.7;
-            }
-
-            .reviews-section {
-                padding: 3rem 0;
-            }
-
-            .reviews-container {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .review-card {
-                padding: 1.5rem;
-            }
-
-            .reviewer-avatar {
-                width: 40px;
-                height: 40px;
-                font-size: 0.9rem;
-            }
-
-            .review-card h4 {
-                font-size: 1rem;
-            }
-
-            .review-card p {
-                font-size: 0.9rem;
-            }
-
-            .footer {
-                padding: 2rem 0 1rem;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                text-align: center;
-            }
-
-            .footer-section {
-                margin-bottom: 1rem;
-            }
-
-            .social-links {
-                justify-content: center;
-            }
-
-            .footer-bottom {
-                margin-top: 1rem;
-                padding-top: 1rem;
-            }
-
-            .footer-bottom p {
-                font-size: 0.8rem;
-                line-height: 1.5;
-            }
-
-            /* Intro animation mobile adjustments */
-            .intro-overlay .bottle-container {
-                width: 250px;
-                height: 320px;
-            }
-
-            .intro-overlay .bottle-3d {
-                width: 160px;
-                height: 240px;
-            }
-
-            .intro-overlay .bottle-label {
-                font-size: 0.85rem;
-                padding: 0.8rem;
-            }
-
-            .intro-overlay .bottle-cap {
-                width: 55px;
-                height: 35px;
-                top: -18px;
-            }
-
-            .intro-overlay .leaf {
-                font-size: 1.5rem;
-            }
-
-            .intro-overlay .particle {
-                width: 3px;
-                height: 3px;
-            }
-        }
-
         @media (max-width: 480px) {
-            .logo {
-                font-size: 1.6rem;
-            }
-
-            .cart-icon {
-                padding: 0.6rem;
-                font-size: 1rem;
-            }
-
-            .hero-product {
-                width: 200px;
-                height: 280px;
-            }
-
-            .bottle-3d-hero {
-                width: 140px;
-                height: 240px;
-            }
-
-            .bottle-label-hero {
-                font-size: 0.75rem;
-                padding: 0.8rem;
-            }
-
-            .bottle-label-hero h3 {
-                font-size: 0.95rem;
-            }
-
-            .bottle-label-hero p {
-                font-size: 0.8rem;
-            }
-
-            .hero-text {
-                font-size: 1.5rem;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-            }
-
-            .product-info h3 {
-                font-size: 1.4rem;
-            }
-
-            .ingredients-grid {
+            .stats-overview {
                 grid-template-columns: 1fr;
-                gap: 0.6rem;
             }
-
-            .ingredient-card {
-                padding: 1rem;
+            
+            .boxes-grid {
+                grid-template-columns: 1fr;
             }
-
-            .ingredient-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 1.3rem;
+            
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
             }
-
-            .fade-in[style*="display: flex"] .cta-button {
-                width: 180px;
-                padding: 0.7rem 1.5rem;
-                font-size: 0.95rem;
+            
+            .system-controls {
+                grid-template-columns: 1fr;
             }
-
-            /* Intro animation small mobile adjustments */
-            .intro-overlay .bottle-container {
-                width: 200px;
-                height: 280px;
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
             }
-
-            .intro-overlay .bottle-3d {
-                width: 140px;
-                height: 200px;
+            
+            .tab-bar {
+                padding: 12px 5px;
+            }
+            
+            .tab-icon {
+                font-size: 20px;
+            }
+            
+            .tab-label {
+                font-size: 11px;
             }
         }
 
-        /* Touch-friendly improvements */
-        @media (hover: none) and (pointer: coarse) {
-            .cta-button:hover {
-                transform: none;
-                box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
-            }
-
-            .ingredient-card:hover {
-                transform: none;
-            }
-
-            .review-card:hover {
-                transform: none;
-            }
-
-            .social-link:hover {
-                transform: none;
-                background: rgba(255,255,255,0.2);
-            }
-
-            .cart-icon:hover {
-                transform: none;
-                background: #48bb78;
-            }
-
-            /* Add active states for touch */
-            .cta-button:active {
-                transform: translateY(-1px);
-                box-shadow: 0 6px 20px rgba(72, 187, 120, 0.4);
-            }
-
-            .ingredient-card:active {
-                transform: translateY(-2px);
-            }
-
-            .social-link:active {
-                background: rgba(255,255,255,0.3);
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 768px;
+                margin: 0 auto;
+                box-shadow: 0 0 30px rgba(0,0,0,0.1);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Intro Animation -->
-    <div class="intro-overlay" id="introOverlay">
-        <div class="bottle-container">
-            <div class="bottle-3d">
-                <div class="bottle-body">
-                    <div class="bottle-label">3D Model of Hair Oil Bottle</div>
-                    <div class="bottle-cap"></div>
-                    <div class="bottle-reflection"></div>
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Auth Screen -->
+        <div class="auth-screen active" id="authScreen">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="logo">
+                        <i class="fas fa-recycle"></i>
+                    </div>
+                    <h1>Smart Garbage Collector</h1>
+                    <p>Welcome to the future of waste management</p>
+                </div>
+                
+                <div class="auth-form">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email Address</label>
+                            <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary btn-block" onclick="login()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </button>
+                        
+                        <div class="auth-footer">
+                            Don't have an account? 
+                            <a href="#" class="auth-link" onclick="showSignup()">Sign Up</a>
+                        </div>
+                    </form>
+
+                    <form id="signupForm" style="display: none;">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <input type="text" id="signupName" class="form-input" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signupEmail">Email Address</label>
+                            <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" class="form-input" placeholder="Create a password (min 6 chars)" required>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary btn-block" onclick="signup()">
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
+                        </button>
+                        
+                        <div class="auth-footer">
+                            Already have an account? 
+                            <a href="#" class="auth-link" onclick="showLogin()">Sign In</a>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="particles-container">
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
+        </div>
+
+        <!-- App Screen -->
+        <div class="app-screen" id="appScreen">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-content">
+                    <div class="brand">
+                        <div class="brand-logo">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <div class="brand-text">
+                            <h1 id="appTitle">Dashboard</h1>
+                            <p id="appSubtitle">Smart Garbage Collector</p>
+                        </div>
+                    </div>
+                    
+                    <div class="header-actions">
+                        <div class="status-indicator">
+                            <div class="status-dot" id="statusDot"></div>
+                            <span id="statusText">Online</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">U</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Tab Content -->
+            <div class="tab-content active" id="dashboardTab">
+                <div class="dashboard-content">
+                    <!-- Stats Overview -->
+                    <div class="stats-overview">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <div class="stat-value" id="totalCollections">0</div>
+                            <div class="stat-label">Total Collected</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <div class="stat-value" id="currentBox">1</div>
+                            <div class="stat-label">Current Box</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="stat-value" id="conveyorStatus">STOP</div>
+                            <div class="stat-label">Conveyor Status</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <div class="stat-value" id="signalStrength">0</div>
+                            <div class="stat-label">Signal (dBm)</div>
+                        </div>
+                    </div>
+
+                    <!-- Box Status -->
+                    <section class="boxes-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-boxes"></i> Box Fill Status
+                        </h2>
+                        
+                        <div class="boxes-grid">
+                            <!-- Box 1 -->
+                            <div class="box-card box1">
+                                <div class="box-title">Box 1</div>
+                                <div class="box-type">Plastic Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box1Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box1FillBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Box 2 -->
+                            <div class="box-card box2">
+                                <div class="box-title">Box 2</div>
+                                <div class="box-type">Metal Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box2Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box2FillBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Box 3 -->
+                            <div class="box-card box3">
+                                <div class="box-title">Box 3</div>
+                                <div class="box-type">Organic Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box3Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box3FillBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Robot Control -->
+                    <section class="control-section">
+                        <div class="power-status">
+                            <h3>Power Status</h3>
+                            <div class="status-text" id="robotStatusText">Robot is Idle</div>
+                        </div>
+                        
+                        <div class="robot-control">
+                            <div class="d-pad">
+                                <button class="control-btn up" onclick="sendCommand('VEHICLE_FORWARD')">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                
+                                <button class="control-btn left" onclick="sendCommand('VEHICLE_LEFT')">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                
+                                <button class="control-btn center" onclick="sendCommand('VEHICLE_STOP')">
+                                    <i class="fas fa-stop"></i>
+                                </button>
+                                
+                                <button class="control-btn right" onclick="sendCommand('VEHICLE_RIGHT')">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                                
+                                <button class="control-btn down" onclick="sendCommand('VEHICLE_BACKWARD')">
+                                    <i class="fas fa-arrow-down"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="action-btn start" onclick="sendCommand('CONVEYOR_START')">
+                                    <i class="fas fa-play"></i>
+                                    Start Conveyor
+                                </button>
+                                
+                                <button class="action-btn stop" onclick="sendCommand('CONVEYOR_STOP')">
+                                    <i class="fas fa-stop"></i>
+                                    Stop Conveyor
+                                </button>
+                            </div>
+                            
+                            <div class="system-controls">
+                                <button class="sys-btn" onclick="sendCommand('SYSTEM_RESET')">
+                                    <i class="fas fa-redo"></i>
+                                    Reset Counters
+                                </button>
+                                
+                                <button class="sys-btn" onclick="sendCommand('TEST_ARDUINO')">
+                                    <i class="fas fa-vial"></i>
+                                    Test Arduino
+                                </button>
+                            </div>
+
+                            <!-- Manual separator buttons (no labels) -->
+                            <div class="separator-controls">
+                                <h3><i class="fas fa-cog"></i> Manual Separation</h3>
+                                <div class="separator-btns">
+                                    <button class="sep-btn" style="background: #ff6b6b;" onclick="sendCommand('SEPARATOR_1')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="sep-btn" style="background: #4ecdc4;" onclick="sendCommand('SEPARATOR_2')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="sep-btn" style="background: #1dd1a1;" onclick="sendCommand('SEPARATOR_3')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
             </div>
-            <div class="botanical-outlines">
-                <div class="leaf leaf-1">🍃</div>
-                <div class="leaf leaf-2">🌿</div>
-                <div class="leaf leaf-3">🍃</div>
-                <div class="leaf leaf-4">🌿</div>
+
+            <!-- Profile Tab Content -->
+            <div class="tab-content" id="profileTab">
+                <div class="profile-content">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileAvatar">U</div>
+                        <div class="profile-name" id="profileName">User Name</div>
+                        <div class="profile-email" id="profileEmail">user@example.com</div>
+                    </div>
+
+                    <!-- Profile Stats -->
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileCollections">0</div>
+                            <div class="stat-desc">Collections</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileUptime">0d</div>
+                            <div class="stat-desc">Uptime</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileSignal">0</div>
+                            <div class="stat-desc">Signal</div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Form -->
+                    <div class="profile-form">
+                        <div class="form-section">
+                            <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="editName" class="form-input" placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="editEmail" class="form-input" placeholder="Enter your email">
+                            </div>
+                            <button class="btn btn-primary" onclick="updateProfile()" style="width: 100%;">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+                            </div>
+                            <button class="btn btn-primary" onclick="changePassword()" style="width: 100%;">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Profile Actions -->
+                    <div class="profile-actions">
+                        <div class="action-card" onclick="sendCommand('CONVEYOR_START')">
+                            <div class="action-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="action-text">
+                                <h4>Quick Start</h4>
+                                <p>Start the conveyor system</p>
+                            </div>
+                        </div>
+
+                        <div class="action-card" onclick="refreshData()">
+                            <div class="action-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <div class="action-text">
+                                <h4>Refresh Data</h4>
+                                <p>Update all system information</p>
+                            </div>
+                        </div>
+
+                        <div class="action-card" onclick="logout()">
+                            <div class="action-icon" style="background: linear-gradient(135deg, #f44336, #d32f2f);">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <div class="action-text">
+                                <h4>Logout</h4>
+                                <p>Sign out from your account</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Tab Bar -->
+            <nav class="tab-bar">
+                <a class="tab-item active" data-tab="dashboardTab" onclick="switchTab('dashboardTab')">
+                    <div class="tab-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="tab-label">Home</div>
+                </a>
+                
+                <a class="tab-item" data-tab="profileTab" onclick="switchTab('profileTab')">
+                    <div class="tab-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="tab-label">Profile</div>
+                </a>
+            </nav>
         </div>
     </div>
 
-    <!-- Header -->
-    <header class="header" id="mainHeader">
-        <div class="nav-container">
-            <a href="#" class="logo">Samhita skin</a>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#products">Products</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </nav>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
-                <a href="#cart" class="cart-icon">🛒</a>
-            </div>
-            <div class="mobile-menu" id="mobileMenu">
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#products">Products</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
+    <!-- Notification Toast -->
+    <div class="notification hidden" id="notification">
+        <i id="notificationIcon"></i>
+        <div style="flex: 1;">
+            <div id="notificationTitle" style="font-weight: 600;"></div>
+            <div id="notificationMessage" style="font-size: 14px; color: #666;"></div>
         </div>
-    </header>
+        <button onclick="hideNotification()" style="background: none; border: none; color: #666; cursor: pointer; font-size: 18px;">×</button>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <div class="hero-product">
-                <div class="bottle-3d-hero">
-                    <div class="bottle-cylinder">
-                        <div class="bottle-label-hero">3D Model of Hair Oil Bottle</div>
-                        <div class="bottle-cap-hero"></div>
-                        <div class="bottle-reflection-hero"></div>
-                    </div>
-                </div>
-                <div class="particles-hero">
-                    <div class="particle-hero"></div>
-                    <div class="particle-hero"></div>
-                    <div class="particle-hero"></div>
-                    <div class="particle-hero"></div>
-                    <div class="particle-hero"></div>
-                    <div class="particle-hero"></div>
-                </div>
-                <div class="botanical-hero">
-                    <div class="leaf-hero leaf-hero-1">🍃</div>
-                    <div class="leaf-hero leaf-hero-2">🌿</div>
-                    <div class="leaf-hero leaf-hero-3">🍃</div>
-                    <div class="leaf-hero leaf-hero-4">🌿</div>
-                </div>
-            </div>
-            <h1 class="hero-text">Healthy scalp, stronger roots, natural shine</h1>
-            <p class="hero-subtitle">Ancient wisdom meets modern care <span>🌿</span></p>
-            <a href="#products" class="cta-button">Shop Now</a>
-        </div>
-    </section>
-
-    <!-- Product Highlight -->
-    <section class="product-highlight" id="products">
-        <div class="container">
-            <h2 class="section-title fade-in">Featured Product</h2>
-            <div class="product-showcase">
-                <div class="product-info slide-in-left">
-                    <h3>Keshamrut Hair Oil</h3>
-                    <p class="product-subtitle">By Kshirpak Vidhi</p>
-                    <p>Experience the power of authentic Ayurvedic hair care with our signature Keshamrut Hair Oil. Crafted using traditional Kshirpak Vidhi, this premium formula nourishes your scalp and strengthens hair from root to tip.</p>
-
-                    <div class="ingredients-grid">
-                        <div class="ingredient-card">
-                            <div class="ingredient-icon">🫐</div>
-                            <h4>Amla</h4>
-                            <p>Vitamin C rich</p>
-                        </div>
-                        <div class="ingredient-card">
-                            <div class="ingredient-icon">🌿</div>
-                            <h4>Bhringraj</h4>
-                            <p>Hair growth</p>
-                        </div>
-                        <div class="ingredient-card">
-                            <div class="ingredient-icon">🍃</div>
-                            <h4>Neem</h4>
-                            <p>Scalp health</p>
-                        </div>
-                        <div class="ingredient-card">
-                            <div class="ingredient-icon">🌱</div>
-                            <h4>Brahmi</h4>
-                            <p>Strengthening</p>
-                        </div>
-                    </div>
-
-                    <div class="fade-in" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-                        <button class="cta-button" onclick="alert('Added to cart! 🛒')">Add to Cart</button>
-                        <button class="cta-button" style="background: linear-gradient(135deg, #d4a574, #c49660);" onclick="alert('Learn more about our Ayurvedic process!')">Learn More</button>
-                    </div>
-                </div>
-                <div class="slide-in-right" style="text-align: center;">
-                    <div class="hero-product">
-                        <div class="bottle-3d-hero">
-                            <div class="bottle-cylinder">
-                                <div class="bottle-label-hero">
-                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌿</div>
-                                    <h3 style="margin: 0; font-size: 1.1rem;">Keshamrut Hair Oil</h3>
-                                    <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">100ml Premium Formula</p>
-                                </div>
-                                <div class="bottle-cap-hero"></div>
-                                <div class="bottle-reflection-hero"></div>
-                            </div>
-                        </div>
-                        <div class="particles-hero">
-                            <div class="particle-hero"></div>
-                            <div class="particle-hero"></div>
-                            <div class="particle-hero"></div>
-                            <div class="particle-hero"></div>
-                            <div class="particle-hero"></div>
-                            <div class="particle-hero"></div>
-                        </div>
-                        <div class="botanical-hero">
-                            <div class="leaf-hero leaf-hero-1">🍃</div>
-                            <div class="leaf-hero leaf-hero-2">🌿</div>
-                            <div class="leaf-hero leaf-hero-3">🍃</div>
-                            <div class="leaf-hero leaf-hero-4">🌿</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Ayurveda -->
-    <section class="about-section" id="about">
-        <div class="container">
-            <div class="about-content">
-                <h2 class="section-title fade-in">About Ayurveda</h2>
-                <p class="about-text fade-in">
-                    At Samhita skin, we blend ancient Ayurvedic wisdom with modern care to bring you natural, effective hair solutions. Each formula is crafted using Kshirpak Vidhi — an authentic Ayurvedic process for deep nourishment. Our commitment to traditional methods ensures that every drop of our products carries the healing power of nature.
-                </p>
-                <div class="scale-in" style="font-size: 3rem; margin: 2rem 0;">🪷</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Customer Reviews -->
-    <section class="reviews-section">
-        <div class="container">
-            <h2 class="section-title fade-in">What Our Customers Say</h2>
-            <div class="reviews-container">
-                <div class="review-card fade-in">
-                    <div class="reviewer">
-                        <div class="reviewer-avatar">P</div>
-                        <div>
-                            <h4>Priya Sharma</h4>
-                            <p style="margin: 0; color: #666;">Verified Buyer</p>
-                        </div>
-                    </div>
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"Amazing results! My hair feels so much stronger and shinier after just 3 weeks of using Keshamrut Hair Oil. The natural ingredients really make a difference."</p>
-                </div>
-
-                <div class="review-card fade-in">
-                    <div class="reviewer">
-                        <div class="reviewer-avatar">A</div>
-                        <div>
-                            <h4>Anita Patel</h4>
-                            <p style="margin: 0; color: #666;">Verified Buyer</p>
-                        </div>
-                    </div>
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"Love the authentic Ayurvedic approach! No more scalp irritation and my hair growth has improved significantly. Highly recommend Samhita skin products."</p>
-                </div>
-
-                <div class="review-card fade-in">
-                    <div class="reviewer">
-                        <div class="reviewer-avatar">R</div>
-                        <div>
-                            <h4>Rajesh Kumar</h4>
-                            <p style="margin: 0; color: #666;">Verified Buyer</p>
-                        </div>
-                    </div>
-                    <div class="stars">⭐⭐⭐⭐⭐</div>
-                    <p>"The quality is exceptional! You can feel the difference from the first application. The traditional Kshirpak Vidhi process really shows in the results."</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer" id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Contact Us</h4>
-                    <p>📞 +91 9970681145</p>
-                    <p>✉️ hello@samhitaskin</p>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Follow Us</h4>
-                    <div class="social-links">
-                        <a href="https://instagram.com/samhitaskin" target="_blank" rel="noopener noreferrer" class="social-link">📷</a>
-                        <a href="#" class="social-link">📘</a>
-                        <a href="#" class="social-link">🐦</a>
-                    </div>
-                    <p>Instagram: @SamhitaSkin</p>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Our Products</h4>
-                    <p>Keshamrut Hair Oil</p>
-                    <p>Ayurvedic Skincare</p>
-                    <p>Natural Haircare</p>
-                </div>
-
-
-
-                <div class="footer-bottom">
-                    <p>&copy; 2025 Samhita skin. All rights reserved. | Crafted with ancient wisdom 🌿</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgOOV2ZMReoRQV6cD3ataRz45i179cNnU",
+            authDomain: "water-garbage-collector.firebaseapp.com",
+            databaseURL: "https://water-garbage-collector-default-rtdb.firebaseio.com",
+            projectId: "water-garbage-collector",
+            storageBucket: "water-garbage-collector.firebasestorage.app",
+            messagingSenderId: "20313951406",
+            appId: "1:20313951406:web:4a22aa1d78db7eca72f13f"
         };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // Device ID (Update this to match your ESP32 device ID)
+        const DEVICE_ID = "ESP32_GARBAGE_SORTER";
+
+        // DOM Elements
+        const authScreen = document.getElementById('authScreen');
+        const appScreen = document.getElementById('appScreen');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const userAvatar = document.getElementById('userAvatar');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const notification = document.getElementById('notification');
+        const appTitle = document.getElementById('appTitle');
+        const appSubtitle = document.getElementById('appSubtitle');
+
+        // Tab Management
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update active tab in tab bar
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabId) {
+                    tab.classList.add('active');
                 }
             });
-        }, observerOptions);
+            
+            // Update header title
+            if (tabId === 'dashboardTab') {
+                appTitle.textContent = 'Dashboard';
+                appSubtitle.textContent = 'Smart Garbage Collector';
+            } else if (tabId === 'profileTab') {
+                appTitle.textContent = 'Profile';
+                appSubtitle.textContent = 'Account Settings';
+            }
+        }
 
-        // Observe all animated elements
-        document.addEventListener('DOMContentLoaded', () => {
-            const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in, .ingredient-card');
-            animatedElements.forEach(el => observer.observe(el));
-        });
-
-        // Add subtle parallax effect to hero
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero');
-            if (parallax && scrolled < window.innerHeight) {
-                const speed = scrolled * 0.3;
-                parallax.style.transform = `translateY(${speed}px)`;
+        // Firebase Connection Monitor
+        database.ref('.info/connected').on('value', (snap) => {
+            if (snap.val() === true) {
+                updateStatusIndicator('online', 'Connected');
+            } else {
+                updateStatusIndicator('offline', 'Disconnected');
             }
         });
 
-        // Enhanced hover effects for ingredient cards
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.ingredient-card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    if (this.classList.contains('visible')) {
-                        this.style.transform = 'translateY(-10px) scale(1.05)';
-                        this.style.boxShadow = '0 15px 35px rgba(72, 187, 120, 0.2)';
-                    }
-                });
-
-                card.addEventListener('mouseleave', function() {
-                    if (this.classList.contains('visible')) {
-                        this.style.transform = 'translateY(0) scale(1)';
-                        this.style.boxShadow = 'none';
-                    }
-                });
-            });
-        });
-
-        // Add floating animation to hero product
-        document.addEventListener('DOMContentLoaded', () => {
-            const heroProduct = document.querySelector('.hero-product');
-            if (heroProduct) {
-                let floatDirection = 1;
-                setInterval(() => {
-                    const currentTransform = heroProduct.style.transform || '';
-                    const translateY = Math.sin(Date.now() * 0.001) * 10;
-                    heroProduct.style.transform = `translateY(${translateY}px)`;
-                }, 50);
+        // Authentication State
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                authScreen.classList.add('hidden');
+                appScreen.classList.add('active');
+                
+                // Update user info
+                updateUserInfo(user);
+                
+                showNotification('success', 'Welcome Back!', `Logged in as ${user.email}`);
+                
+                // Start listening to device data
+                startDeviceListeners();
+                
+                // Set default tab
+                switchTab('dashboardTab');
+            } else {
+                // User is signed out
+                authScreen.classList.remove('hidden');
+                appScreen.classList.remove('active');
             }
         });
 
-        // Handle intro animation completion
-        document.addEventListener('DOMContentLoaded', () => {
-            const introOverlay = document.getElementById('introOverlay');
+        // Update User Information
+        function updateUserInfo(user) {
+            const name = user.displayName || 'User';
+            const email = user.email || 'user@example.com';
+            const initial = name.charAt(0).toUpperCase();
+            
+            userAvatar.textContent = initial;
+            profileAvatar.textContent = initial;
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileEmail').textContent = email;
+            document.getElementById('editName').value = name;
+            document.getElementById('editEmail').value = email;
+        }
 
-            // Remove intro overlay after animation completes
-            setTimeout(() => {
-                if (introOverlay) {
-                    introOverlay.remove();
-                }
-            }, 4000);
-        });
+        // UI Functions
+        function showSignup() {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        }
 
-        // Mobile menu functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileMenu = document.getElementById('mobileMenu');
+        function showLogin() {
+            signupForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        }
 
-            if (mobileMenuToggle && mobileMenu) {
-                mobileMenuToggle.addEventListener('click', () => {
-                    mobileMenu.classList.toggle('active');
-
-                    // Change hamburger to X when open
-                    if (mobileMenu.classList.contains('active')) {
-                        mobileMenuToggle.innerHTML = '✕';
-                    } else {
-                        mobileMenuToggle.innerHTML = '☰';
-                    }
+        // Auth Functions
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showNotification('error', 'Error', 'Please enter email and password');
+                return;
+            }
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .catch((error) => {
+                    showNotification('error', 'Login Failed', error.message);
                 });
+        }
 
-                // Close mobile menu when clicking on a link
-                const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-                mobileMenuLinks.forEach(link => {
-                    link.addEventListener('click', () => {
-                        mobileMenu.classList.remove('active');
-                        mobileMenuToggle.innerHTML = '☰';
+        function signup() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            if (!name || !email || !password) {
+                showNotification('error', 'Error', 'Please fill all fields');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showNotification('error', 'Error', 'Password must be at least 6 characters');
+                return;
+            }
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Update profile with name
+                    return userCredential.user.updateProfile({
+                        displayName: name
                     });
+                })
+                .then(() => {
+                    showNotification('success', 'Account Created', 'Welcome to the system!');
+                    showLogin();
+                })
+                .catch((error) => {
+                    showNotification('error', 'Signup Failed', error.message);
                 });
+        }
 
-                // Close mobile menu when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
-                        mobileMenu.classList.remove('active');
-                        mobileMenuToggle.innerHTML = '☰';
-                    }
+        function logout() {
+            auth.signOut()
+                .then(() => {
+                    showNotification('success', 'Logged Out', 'Successfully logged out');
+                })
+                .catch((error) => {
+                    console.error('Logout error:', error);
                 });
+        }
+
+        function updateProfile() {
+            const user = auth.currentUser;
+            const newName = document.getElementById('editName').value;
+            const newEmail = document.getElementById('editEmail').value;
+            
+            if (user) {
+                const promises = [];
+                
+                if (newName && newName !== user.displayName) {
+                    promises.push(user.updateProfile({
+                        displayName: newName
+                    }));
+                }
+                
+                if (newEmail && newEmail !== user.email) {
+                    promises.push(user.updateEmail(newEmail));
+                }
+                
+                if (promises.length > 0) {
+                    Promise.all(promises)
+                        .then(() => {
+                            updateUserInfo(user);
+                            showNotification('success', 'Profile Updated', 'Your profile has been updated');
+                        })
+                        .catch((error) => {
+                            showNotification('error', 'Update Failed', error.message);
+                        });
+                }
+            }
+        }
+
+        function changePassword() {
+            const user = auth.currentUser;
+            const currentPass = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            
+            if (!currentPass || !newPass || !confirmPass) {
+                showNotification('error', 'Error', 'Please fill all password fields');
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                showNotification('error', 'Error', 'New passwords do not match');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                showNotification('error', 'Error', 'Password must be at least 6 characters');
+                return;
+            }
+            
+            // Reauthenticate user first
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPass);
+            
+            user.reauthenticateWithCredential(credential)
+                .then(() => {
+                    return user.updatePassword(newPass);
+                })
+                .then(() => {
+                    // Clear password fields
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    
+                    showNotification('success', 'Password Changed', 'Your password has been updated');
+                })
+                .catch((error) => {
+                    showNotification('error', 'Password Change Failed', error.message);
+                });
+        }
+
+        // Device Data Listeners
+        function startDeviceListeners() {
+            // Listen to device status
+            database.ref('devices/' + DEVICE_ID + '/status').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    updateDashboard(data);
+                }
+            });
+            
+            // Listen to statistics
+            const today = new Date().toISOString().split('T')[0];
+            database.ref('statistics/' + today).on('value', (snapshot) => {
+                const stats = snapshot.val();
+                if (stats) {
+                    updateStatistics(stats);
+                }
+            });
+        }
+
+        // Update Functions
+        function updateDashboard(data) {
+            // Update main stats
+            document.getElementById('totalCollections').textContent = data.garbage_count || 0;
+            document.getElementById('currentBox').textContent = data.current_box || 1;
+            document.getElementById('conveyorStatus').textContent = data.conveyor_status || 'STOP';
+            document.getElementById('signalStrength').textContent = data.rssi || 0;
+            
+            // Update box data
+            document.getElementById('box1Level').textContent = (data.box1_level || 0) + '%';
+            document.getElementById('box2Level').textContent = (data.box2_level || 0) + '%';
+            document.getElementById('box3Level').textContent = (data.box3_level || 0) + '%';
+            
+            // Update fill bars
+            document.getElementById('box1FillBar').style.width = (data.box1_level || 0) + '%';
+            document.getElementById('box2FillBar').style.width = (data.box2_level || 0) + '%';
+            document.getElementById('box3FillBar').style.width = (data.box3_level || 0) + '%';
+            
+            // Update status text
+            if (data.conveyor_status === 'RUNNING') {
+                document.getElementById('robotStatusText').textContent = 'Conveyor Running';
+                statusText.textContent = 'Running';
+                statusDot.style.background = '#4cc9f0';
+            } else if (data.vehicle_status !== 'STOP') {
+                document.getElementById('robotStatusText').textContent = 'Vehicle Moving';
+                statusText.textContent = 'Moving';
+                statusDot.style.background = '#f72585';
+            } else {
+                document.getElementById('robotStatusText').textContent = 'Robot is Idle';
+                statusText.textContent = 'Idle';
+                statusDot.style.background = '#4CAF50';
+            }
+            
+            // Update profile stats
+            document.getElementById('profileCollections').textContent = data.garbage_count || 0;
+            document.getElementById('profileUptime').textContent = formatSeconds(data.uptime_seconds || 0);
+            document.getElementById('profileSignal').textContent = data.rssi || 0;
+        }
+
+        function updateStatistics(stats) {
+            // You can add additional statistics here if needed
+        }
+
+        function updateStatusIndicator(status, message) {
+            if (status === 'online') {
+                statusText.textContent = message;
+            } else {
+                statusText.textContent = message;
+            }
+        }
+
+        // Command Functions
+        function sendCommand(action) {
+            const user = auth.currentUser;
+            if (!user) {
+                showNotification('error', 'Not Logged In', 'Please login to send commands');
+                return;
+            }
+
+            const commandData = {
+                action: action,
+                user_id: user.uid,
+                user_email: user.email,
+                timestamp: new Date().toISOString(),
+                pending: true
+            };
+
+            database.ref('devices/' + DEVICE_ID + '/commands').set(commandData)
+                .then(() => {
+                    showNotification('success', 'Command Sent', `${action.replace('_', ' ')} command sent to device`);
+                })
+                .catch((error) => {
+                    showNotification('error', 'Command Failed', error.message);
+                });
+        }
+
+        // Helper Functions
+        function formatSeconds(seconds) {
+            if (seconds < 60) return seconds + 's';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+            return Math.floor(seconds / 86400) + 'd';
+        }
+
+        function refreshData() {
+            showNotification('info', 'Refreshing', 'Updating system data...');
+            // This would trigger a manual refresh of data
+            // For now, we'll just show a notification
+            setTimeout(() => {
+                showNotification('success', 'Refreshed', 'System data updated');
+            }, 1000);
+        }
+
+        function showNotification(type, title, message) {
+            const icon = document.getElementById('notificationIcon');
+            const notificationTitle = document.getElementById('notificationTitle');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            // Set icon based on type
+            switch(type) {
+                case 'success':
+                    icon.className = 'fas fa-check-circle';
+                    icon.style.color = '#4CAF50';
+                    notification.className = 'notification success';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle';
+                    icon.style.color = '#f44336';
+                    notification.className = 'notification error';
+                    break;
+                case 'warning':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    icon.style.color = '#FF9800';
+                    notification.className = 'notification warning';
+                    break;
+                case 'info':
+                    icon.className = 'fas fa-info-circle';
+                    icon.style.color = '#2196F3';
+                    notification.className = 'notification';
+                    break;
+            }
+            
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            notification.classList.remove('hidden');
+            
+            // Auto hide after 5 seconds
+            setTimeout(hideNotification, 5000);
+        }
+
+        function hideNotification() {
+            notification.classList.add('hidden');
+        }
+
+        // Initialize
+        console.log('Smart Garbage Collector App Loaded');
+        
+        // Auto-hide notification on click outside
+        document.addEventListener('click', (e) => {
+            if (!notification.contains(e.target) && !notification.classList.contains('hidden')) {
+                hideNotification();
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98dc678453c43d1e',t:'MTc2MDMzMzAwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
