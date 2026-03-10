@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aquasweep · Smart Garbage Collector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Garbage Collector</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         /* ===== VARIABLES ===== */
         :root {
@@ -17,11 +18,14 @@
             --light: #f8f9fa;
             --dark: #212529;
             --gray: #6c757d;
-            --box1: #ff6b6b;      /* plastic/dry */
-            --box2: #4ecdc4;      /* metal/aluminium */
-            --box3: #1dd1a1;      /* organic/wet */
+            --box1: #ff6b6b;
+            --box2: #4ecdc4;
+            --box3: #1dd1a1;
+            --tab-active: #4361ee;
+            --tab-inactive: #6c757d;
         }
 
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -36,6 +40,7 @@
             line-height: 1.6;
         }
 
+        /* ===== APP CONTAINER ===== */
         .app-container {
             max-width: 100%;
             margin: 0 auto;
@@ -45,7 +50,7 @@
             overflow-x: hidden;
         }
 
-        /* ===== AUTH SCREEN (unchanged) ===== */
+        /* ===== AUTH SCREEN ===== */
         .auth-screen {
             position: fixed;
             top: 0;
@@ -60,7 +65,12 @@
             z-index: 1000;
             transition: opacity 0.3s ease;
         }
-        .auth-screen.hidden { opacity: 0; pointer-events: none; }
+
+        .auth-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .auth-card {
             background: white;
             border-radius: 24px;
@@ -70,19 +80,57 @@
             overflow: hidden;
             animation: slideUp 0.5s ease;
         }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
         .auth-header {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: white;
             padding: 40px 30px;
             text-align: center;
         }
-        .auth-header .logo { font-size: 50px; margin-bottom: 20px; color: white; }
-        .auth-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
-        .auth-header p { font-size: 16px; opacity: 0.9; }
-        .auth-form { padding: 30px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--dark); }
+
+        .auth-header .logo {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .auth-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .auth-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
         .form-input {
             width: 100%;
             padding: 16px 20px;
@@ -92,11 +140,13 @@
             font-family: 'Poppins', sans-serif;
             transition: all 0.3s;
         }
+
         .form-input:focus {
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
         }
+
         .btn {
             padding: 16px;
             border: none;
@@ -111,107 +161,190 @@
             gap: 10px;
             font-family: 'Poppins', sans-serif;
         }
-        .btn-block { width: 100%; }
+
+        .btn-block {
+            width: 100%;
+        }
+
         .btn-primary {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: white;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3); }
-        .auth-footer { text-align: center; margin-top: 20px; color: var(--gray); }
-        .auth-link { color: var(--primary); font-weight: 600; cursor: pointer; text-decoration: none; }
-        .auth-link:hover { text-decoration: underline; }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+
+        .auth-link {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
 
         /* ===== APP SCREEN ===== */
         .app-screen {
             display: none;
             min-height: 100vh;
-            background: #f5f5f5;
+            padding-bottom: 80px; /* Space for tab bar */
         }
-        .app-screen.active { display: block; }
 
-        /* Header with toggle and profile */
+        .app-screen.active {
+            display: block;
+        }
+
+        /* Header */
         .app-header {
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: white;
-            padding: 12px 20px;
+            padding: 15px 20px;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
         }
-        .logo {
-            font-weight: 700;
-            font-size: 22px;
-            letter-spacing: 1px;
-            color: white;
-        }
-        .header-right {
+
+        .brand {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        .mode-toggle {
-            display: flex;
-            background: rgba(255,255,255,0.2);
-            border-radius: 40px;
-            padding: 4px;
-        }
-        .mode-btn {
-            padding: 8px 20px;
-            border: none;
-            background: transparent;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 14px;
+
+        .brand-logo {
+            font-size: 28px;
             color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: 'Poppins', sans-serif;
         }
-        .mode-btn.active {
-            background: white;
-            color: var(--primary);
+
+        .brand-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
         }
-        .profile-icon {
-            width: 42px;
-            height: 42px;
+
+        .brand-text p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
             background: white;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary);
             font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 16px;
         }
 
-        /* Main content */
-        .content {
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== DASHBOARD TAB ===== */
+        .dashboard-content {
             padding: 20px;
         }
 
-        /* Mode sections */
-        .mode-section {
-            display: none;
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             margin-bottom: 25px;
         }
-        .mode-section.active { display: block; }
 
-        /* Cards */
-        .card {
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Box Status */
+        .boxes-section {
             background: white;
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border: 1px solid #e0e0e0;
         }
-        .card-title {
+
+        .section-title {
             font-size: 18px;
             font-weight: 600;
             color: var(--dark);
@@ -220,146 +353,137 @@
             align-items: center;
             gap: 10px;
         }
-        .card-title i { color: var(--primary); }
 
-        /* Sensor diagnostics (Auto) */
-        .sensor-grid {
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .boxes-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
         }
-        .sensor-item {
-            background: #f8f9fa;
+
+        .box-card {
+            background: white;
             border-radius: 16px;
             padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .sensor-icon {
-            width: 54px;
-            height: 54px;
-            border-radius: 16px;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: var(--primary);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-        .sensor-info h4 { font-size: 14px; font-weight: 500; color: var(--gray); }
-        .sensor-info p { font-size: 26px; font-weight: 700; color: var(--dark); }
-
-        /* Bin capacity header */
-        .bin-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .battery {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #f1f5f9;
-            padding: 8px 16px;
-            border-radius: 40px;
-        }
-        .battery i { color: #4CAF50; }
-        .battery span { font-weight: 600; }
-        .bin-stats {
-            display: flex;
-            gap: 10px;
-        }
-        .bin-pill {
-            background: #f1f5f9;
-            border-radius: 40px;
-            padding: 8px 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 500;
-        }
-        .bin-pill.metal i { color: var(--box2); }
-        .bin-pill.organic i { color: #3b82f6; }  /* changed from wet to organic */
-        .bin-pill.plastic i { color: var(--box1); }
-
-        /* Progress bars */
-        .bin-progress {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .bin-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .bin-label {
-            width: 90px;
-            font-weight: 600;
-        }
-        .progress-bar {
-            flex: 1;
-            height: 12px;
-            background: #e0e0e0;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 20px;
-            transition: width 0.3s;
-        }
-        .metal-fill { background: var(--box2); }
-        .organic-fill { background: #3b82f6; }  /* changed from wet-fill */
-        .plastic-fill { background: var(--box1); }
-        .bin-value {
-            width: 50px;
-            text-align: right;
-            font-weight: 700;
-        }
-
-        /* Collection history */
-        .history-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
             text-align: center;
+            border: 1px solid #e0e0e0;
+            transition: transform 0.3s;
         }
-        .history-item {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 15px 8px;
-        }
-        .history-item h5 { font-size: 13px; color: var(--gray); margin-bottom: 8px; }
-        .history-item .value { font-size: 20px; font-weight: 700; }
-        .organic-text { color: #3b82f6; }
-        .plastic-text { color: var(--box1); }
-        .aluminium-text { color: var(--box2); }
 
-        /* Manual mode - Drive only (Lift removed) */
-        .drive-grid {
+        .box-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .box-card.box1 {
+            border-top: 4px solid var(--box1);
+        }
+
+        .box-card.box2 {
+            border-top: 4px solid var(--box2);
+        }
+
+        .box-card.box3 {
+            border-top: 4px solid var(--box3);
+        }
+
+        .box-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .box-type {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .fill-display {
+            margin: 20px 0;
+        }
+
+        .fill-percentage {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .box1 .fill-percentage { color: var(--box1); }
+        .box2 .fill-percentage { color: var(--box2); }
+        .box3 .fill-percentage { color: var(--box3); }
+
+        .fill-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .fill-level {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        .box1 .fill-level { background: var(--box1); }
+        .box2 .fill-level { background: var(--box2); }
+        .box3 .fill-level { background: var(--box3); }
+
+        /* Robot Control */
+        .control-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .power-status {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 16px;
+        }
+
+        .power-status h3 {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .status-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Robot Control Layout */
+        .robot-control {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            align-items: center;
+            gap: 25px;
         }
-        .dpad-container {
-            display: flex;
-            justify-content: center;
-        }
+
         .d-pad {
             display: grid;
             grid-template-areas:
                 ". up ."
                 "left center right"
                 ". down .";
-            gap: 15px;
+            gap: 12px;
             justify-items: center;
+            align-items: center;
         }
-        .ctrl-btn {
+
+        .control-btn {
             width: 70px;
             height: 70px;
             border: none;
@@ -370,66 +494,35 @@
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 15px rgba(67, 97, 238, 0.3);
         }
-        .ctrl-btn small { font-size: 10px; margin-top: 2px; }
-        .ctrl-btn:hover { transform: scale(1.05); }
-        .ctrl-btn:active { transform: scale(0.95); }
-        .ctrl-btn.up { grid-area: up; }
-        .ctrl-btn.left { grid-area: left; }
-        .ctrl-btn.center { grid-area: center; background: linear-gradient(135deg, #4CAF50, #45a049); }
-        .ctrl-btn.right { grid-area: right; }
-        .ctrl-btn.down { grid-area: down; }
 
-        .speed-control {
-            background: #f8f9fa;
-            border-radius: 60px;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-        .speed-bar {
-            width: 60%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .speed-fill {
-            height: 100%;
-            width: 70%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 20px;
+        .control-btn:hover {
+            transform: scale(1.05);
         }
 
-        /* Robot control (common) */
-        .robot-control {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            border: 1px solid #e0e0e0;
-            margin-top: 20px;
+        .control-btn:active {
+            transform: scale(0.95);
         }
-        .power-status {
-            text-align: center;
-            margin-bottom: 25px;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            border-radius: 16px;
+
+        .control-btn.up { grid-area: up; }
+        .control-btn.left { grid-area: left; }
+        .control-btn.center { 
+            grid-area: center; 
+            background: linear-gradient(135deg, #4CAF50, #45a049);
         }
-        .power-status h3 { font-size: 16px; color: var(--gray); margin-bottom: 10px; }
-        .status-text { font-size: 20px; font-weight: 600; color: var(--dark); }
+        .control-btn.right { grid-area: right; }
+        .control-btn.down { grid-area: down; }
+
         .action-buttons {
             display: flex;
             gap: 15px;
-            margin: 20px 0;
+            margin-top: 15px;
+            width: 100%;
         }
+
         .action-btn {
             flex: 1;
             padding: 18px;
@@ -445,17 +538,34 @@
             gap: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .action-btn.start { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
-        .action-btn.stop { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
-        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .action-btn:active { transform: translateY(0); }
 
+        .action-btn.start {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .action-btn.stop {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* System Controls */
         .system-controls {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-top: 20px;
         }
+
         .sys-btn {
             padding: 14px;
             border: 2px solid var(--primary);
@@ -471,19 +581,31 @@
             justify-content: center;
             gap: 8px;
         }
-        .sys-btn:hover { background: var(--primary); color: white; }
 
+        .sys-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Manual separator buttons */
         .separator-controls {
             margin-top: 20px;
             text-align: center;
         }
-        .separator-controls h3 { font-size: 16px; color: var(--gray); margin-bottom: 10px; }
+
+        .separator-controls h3 {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
         .separator-btns {
             display: flex;
             gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
         }
+
         .sep-btn {
             width: 60px;
             height: 60px;
@@ -498,48 +620,212 @@
             justify-content: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .sep-btn:hover { transform: scale(1.1); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
-        .sep-btn:active { transform: scale(0.95); }
 
-        /* Profile Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
+        .sep-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .sep-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== PROFILE TAB ===== */
+        .profile-content {
             padding: 20px;
         }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: white;
-            border-radius: 24px;
-            max-width: 400px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 25px;
-            animation: slideUp 0.3s;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        .profile-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
             margin-bottom: 20px;
         }
-        .modal-header h2 { font-size: 22px; color: var(--dark); }
-        .close-modal {
-            font-size: 30px;
-            cursor: pointer;
-            color: var(--gray);
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 15px;
         }
 
-        /* Notification */
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-desc {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .profile-form {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section h3 i {
+            color: var(--primary);
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .action-text h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .action-text p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        /* ===== TAB BAR ===== */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 10px;
+            border-top: 1px solid #e0e0e0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--tab-inactive);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+            flex: 1;
+            max-width: 100px;
+        }
+
+        .tab-item:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .tab-item.active {
+            color: var(--tab-active);
+        }
+
+        .tab-icon {
+            font-size: 22px;
+        }
+
+        .tab-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tab-item.active .tab-icon {
+            color: var(--primary);
+        }
+
+        .tab-item.active .tab-label {
+            color: var(--primary);
+        }
+
+        /* ===== NOTIFICATIONS ===== */
         .notification {
             position: fixed;
             top: 20px;
@@ -556,274 +842,453 @@
             max-width: 350px;
             transform: translateX(0);
         }
-        .notification.hidden { transform: translateX(150%); animation: slideOut 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(150%); } to { transform: translateX(0); } }
-        @keyframes slideOut { from { transform: translateX(0); } to { transform: translateX(150%); } }
-        .notification.success { border-left: 4px solid #4CAF50; }
-        .notification.error { border-left: 4px solid #f44336; }
-        .notification.warning { border-left: 4px solid #FF9800; }
 
+        .notification.hidden {
+            transform: translateX(150%);
+            animation: slideOut 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(150%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); }
+            to { transform: translateX(150%); }
+        }
+
+        .notification.success {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .notification.warning {
+            border-left: 4px solid #FF9800;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive Design */
         @media (max-width: 480px) {
-            .sensor-item { padding: 15px; }
-            .sensor-icon { width: 48px; height: 48px; font-size: 24px; }
-            .sensor-info p { font-size: 22px; }
-            .bin-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .bin-stats { width: 100%; justify-content: space-between; }
-            .ctrl-btn { width: 60px; height: 60px; font-size: 20px; }
-            .system-controls { grid-template-columns: 1fr; }
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .boxes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .system-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .tab-bar {
+                padding: 12px 5px;
+            }
+            
+            .tab-icon {
+                font-size: 20px;
+            }
+            
+            .tab-label {
+                font-size: 11px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 768px;
+                margin: 0 auto;
+                box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            }
         }
     </style>
 </head>
 <body>
+    <!-- App Container -->
     <div class="app-container">
-        <!-- Auth Screen (unchanged) -->
+        <!-- Auth Screen -->
         <div class="auth-screen active" id="authScreen">
             <div class="auth-card">
                 <div class="auth-header">
-                    <div class="logo"><i class="fas fa-recycle"></i></div>
+                    <div class="logo">
+                        <i class="fas fa-recycle"></i>
+                    </div>
                     <h1>Smart Garbage Collector</h1>
                     <p>Welcome to the future of waste management</p>
                 </div>
+                
                 <div class="auth-form">
                     <form id="loginForm">
                         <div class="form-group">
                             <label for="loginEmail">Email Address</label>
                             <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
                         </div>
+                        
                         <div class="form-group">
                             <label for="loginPassword">Password</label>
                             <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
                         </div>
+                        
                         <button type="button" class="btn btn-primary btn-block" onclick="login()">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
                         </button>
+                        
                         <div class="auth-footer">
                             Don't have an account? 
-                            <a href="#" class="auth-link" onclick="showSignup(); return false;">Sign Up</a>
+                            <a href="#" class="auth-link" onclick="showSignup()">Sign Up</a>
                         </div>
                     </form>
+
                     <form id="signupForm" style="display: none;">
                         <div class="form-group">
                             <label for="signupName">Full Name</label>
                             <input type="text" id="signupName" class="form-input" placeholder="Enter your full name" required>
                         </div>
+                        
                         <div class="form-group">
                             <label for="signupEmail">Email Address</label>
                             <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
                         </div>
+                        
                         <div class="form-group">
                             <label for="signupPassword">Password</label>
                             <input type="password" id="signupPassword" class="form-input" placeholder="Create a password (min 6 chars)" required>
                         </div>
+                        
                         <button type="button" class="btn btn-primary btn-block" onclick="signup()">
-                            <i class="fas fa-user-plus"></i> Create Account
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
                         </button>
+                        
                         <div class="auth-footer">
                             Already have an account? 
-                            <a href="#" class="auth-link" onclick="showLogin(); return false;">Sign In</a>
+                            <a href="#" class="auth-link" onclick="showLogin()">Sign In</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Main App Screen -->
+        <!-- App Screen -->
         <div class="app-screen" id="appScreen">
             <!-- Header -->
             <header class="app-header">
-                <div class="logo">Aquasweep</div>   <!-- changed from WASTEXPERT -->
-                <div class="header-right">
-                    <div class="mode-toggle">
-                        <button class="mode-btn active" id="modeManual">MANUAL</button>
-                        <button class="mode-btn" id="modeAuto">AUTO</button>
+                <div class="header-content">
+                    <div class="brand">
+                        <div class="brand-logo">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <div class="brand-text">
+                            <h1 id="appTitle">Dashboard</h1>
+                            <p id="appSubtitle">Smart Garbage Collector</p>
+                        </div>
                     </div>
-                    <div class="profile-icon" id="profileIcon">
-                        <span id="userAvatar">U</span>
+                    
+                    <div class="header-actions">
+                        <div class="status-indicator">
+                            <div class="status-dot" id="statusDot"></div>
+                            <span id="statusText">Online</span>
+                        </div>
+                        <div class="user-avatar" id="userAvatar">U</div>
                     </div>
                 </div>
             </header>
 
-            <div class="content">
-                <!-- AUTO Mode Section (visible when AUTO active) -->
-                <div id="autoSection" class="mode-section">
-                    <!-- Live Sensor Diagnostics -->
-                    <div class="card">
-                        <div class="card-title"><i class="fas fa-microchip"></i> LIVE SENSOR DIAGNOSTICS</div>
-                        <div class="sensor-grid">
-                            <div class="sensor-item">
-                                <div class="sensor-icon"><i class="fas fa-cog"></i></div>
-                                <div class="sensor-info">
-                                    <h4>METAL</h4>
-                                    <p id="metalSensor">0%</p>
+            <!-- Dashboard Tab Content -->
+            <div class="tab-content active" id="dashboardTab">
+                <div class="dashboard-content">
+                    <!-- Stats Overview -->
+                    <div class="stats-overview">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <div class="stat-value" id="totalCollections">0</div>
+                            <div class="stat-label">Total Collected</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                            <div class="stat-value" id="currentBox">1</div>
+                            <div class="stat-label">Current Box</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div class="stat-value" id="conveyorStatus">STOP</div>
+                            <div class="stat-label">Conveyor Status</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-wifi"></i>
+                            </div>
+                            <div class="stat-value" id="signalStrength">0</div>
+                            <div class="stat-label">Signal (dBm)</div>
+                        </div>
+                    </div>
+
+                    <!-- Box Status -->
+                    <section class="boxes-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-boxes"></i> Box Fill Status
+                        </h2>
+                        
+                        <div class="boxes-grid">
+                            <!-- Box 1 -->
+                            <div class="box-card box1">
+                                <div class="box-title">Box 1</div>
+                                <div class="box-type">Plastic Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box1Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box1FillBar" style="width: 0%"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="sensor-item">
-                                <div class="sensor-icon"><i class="fas fa-tint"></i></div>
-                                <div class="sensor-info">
-                                    <h4>WET</h4>
-                                    <p id="wetSensor">0%</p>
+                            
+                            <!-- Box 2 -->
+                            <div class="box-card box2">
+                                <div class="box-title">Box 2</div>
+                                <div class="box-type">Metal Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box2Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box2FillBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Box 3 -->
+                            <div class="box-card box3">
+                                <div class="box-title">Box 3</div>
+                                <div class="box-type">Organic Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box3Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box3FillBar" style="width: 0%"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- Bin Capacity & Battery -->
-                    <div class="card">
-                        <div class="bin-header">
-                            <div class="battery">
-                                <i class="fas fa-battery-three-quarters"></i>
-                                <span id="batteryLevel">85%</span>
-                            </div>
-                            <div class="bin-stats">
-                                <div class="bin-pill metal"><i class="fas fa-cog"></i> <span id="metalBinLabel">0%</span></div>
-                                <div class="bin-pill organic"><i class="fas fa-tint"></i> <span id="organicBinLabel">0%</span></div> <!-- changed id -->
-                                <div class="bin-pill plastic"><i class="fas fa-leaf"></i> <span id="plasticBinLabel">0%</span></div> <!-- changed id -->
-                            </div>
+                    <!-- Robot Control -->
+                    <section class="control-section">
+                        <div class="power-status">
+                            <h3>Power Status</h3>
+                            <div class="status-text" id="robotStatusText">Robot is Idle</div>
                         </div>
+                        
+                        <div class="robot-control">
+                            <div class="d-pad">
+                                <button class="control-btn up" onclick="sendCommand('VEHICLE_FORWARD')">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                
+                                <button class="control-btn left" onclick="sendCommand('VEHICLE_LEFT')">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                
+                                <button class="control-btn center" onclick="sendCommand('VEHICLE_STOP')">
+                                    <i class="fas fa-stop"></i>
+                                </button>
+                                
+                                <button class="control-btn right" onclick="sendCommand('VEHICLE_RIGHT')">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                                
+                                <button class="control-btn down" onclick="sendCommand('VEHICLE_BACKWARD')">
+                                    <i class="fas fa-arrow-down"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="action-btn start" onclick="sendCommand('CONVEYOR_START')">
+                                    <i class="fas fa-play"></i>
+                                    Start Conveyor
+                                </button>
+                                
+                                <button class="action-btn stop" onclick="sendCommand('CONVEYOR_STOP')">
+                                    <i class="fas fa-stop"></i>
+                                    Stop Conveyor
+                                </button>
+                            </div>
+                            
+                            <div class="system-controls">
+                                <button class="sys-btn" onclick="sendCommand('SYSTEM_RESET')">
+                                    <i class="fas fa-redo"></i>
+                                    Reset Counters
+                                </button>
+                                
+                                <button class="sys-btn" onclick="sendCommand('TEST_ARDUINO')">
+                                    <i class="fas fa-vial"></i>
+                                    Test Arduino
+                                </button>
+                            </div>
 
-                        <div class="bin-progress">
-                            <div class="bin-row">
-                                <span class="bin-label">ALUMINIUM</span> <!-- changed -->
-                                <div class="progress-bar"><div class="progress-fill metal-fill" id="metalBar" style="width:0%"></div></div>
-                                <span class="bin-value" id="metalPercent">0%</span>
-                            </div>
-                            <div class="bin-row">
-                                <span class="bin-label">ORGANIC</span> <!-- changed -->
-                                <div class="progress-bar"><div class="progress-fill organic-fill" id="organicBar" style="width:0%"></div></div>
-                                <span class="bin-value" id="organicPercent">0%</span>
-                            </div>
-                            <div class="bin-row">
-                                <span class="bin-label">PLASTIC</span> <!-- changed -->
-                                <div class="progress-bar"><div class="progress-fill plastic-fill" id="plasticBar" style="width:0%"></div></div>
-                                <span class="bin-value" id="plasticPercent">0%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Collection History -->
-                    <div class="card">
-                        <div class="card-title"><i class="fas fa-history"></i> COLLECTION HISTORY</div>
-                        <div class="history-grid">
-                            <div class="history-item">
-                                <h5>ORGANIC</h5> <!-- changed -->
-                                <div class="value organic-text" id="organicHistory">0 kg</div>
-                            </div>
-                            <div class="history-item">
-                                <h5>PLASTIC</h5> <!-- changed -->
-                                <div class="value plastic-text" id="plasticHistory">0 kg</div>
-                            </div>
-                            <div class="history-item">
-                                <h5>ALUMINIUM</h5> <!-- changed -->
-                                <div class="value aluminium-text" id="aluminiumHistory">0 kg</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <!-- Common Robot Control (appears in both modes) -->
-                <div class="robot-control">
-                    <!-- Drive System Control (only) -->
-                    <div class="card">
-                        <div class="card-title"><i class="fas fa-gamepad"></i> DRIVE SYSTEM CONTROL</div>
-                        <div class="drive-grid">
-                            <div class="dpad-container">
-                                <div class="d-pad">
-                                    <button class="ctrl-btn up" onclick="sendCommand('VEHICLE_FORWARD')"><i class="fas fa-arrow-up"></i><small>FWD</small></button>
-                                    <button class="ctrl-btn left" onclick="sendCommand('VEHICLE_LEFT')"><i class="fas fa-arrow-left"></i><small>LEFT</small></button>
-                                    <button class="ctrl-btn center" onclick="sendCommand('VEHICLE_STOP')"><i class="fas fa-stop"></i><small>STOP</small></button>
-                                    <button class="ctrl-btn right" onclick="sendCommand('VEHICLE_RIGHT')"><i class="fas fa-arrow-right"></i><small>RIGHT</small></button>
-                                    <button class="ctrl-btn down" onclick="sendCommand('VEHICLE_BACKWARD')"><i class="fas fa-arrow-down"></i><small>REV</small></button>
+                            <!-- Manual separator buttons (no labels) -->
+                            <div class="separator-controls">
+                                <h3><i class="fas fa-cog"></i> Manual Separation</h3>
+                                <div class="separator-btns">
+                                    <button class="sep-btn" style="background: #ff6b6b;" onclick="sendCommand('SEPARATOR_1')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="sep-btn" style="background: #4ecdc4;" onclick="sendCommand('SEPARATOR_2')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="sep-btn" style="background: #1dd1a1;" onclick="sendCommand('SEPARATOR_3')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
                                 </div>
                             </div>
-
-                            <div class="speed-control">
-                                <span style="font-weight:600;">WHEEL SPEED</span>
-                                <div class="speed-bar"><div class="speed-fill" style="width:70%"></div></div>
-                                <span>70%</span>
-                            </div>
                         </div>
-                    </div>
-                    <div class="power-status">
-                        <h3>Power Status</h3>
-                        <div class="status-text" id="robotStatusText">Robot is Idle</div>
-                    </div>
-
-                    <div class="action-buttons">
-                        <button class="action-btn start" onclick="sendCommand('CONVEYOR_START')">
-                            <i class="fas fa-play"></i> Start Conveyor
-                        </button>
-                        <button class="action-btn stop" onclick="sendCommand('CONVEYOR_STOP')">
-                            <i class="fas fa-stop"></i> Stop Conveyor
-                        </button>
-                    </div>
-
-                    <div class="system-controls">
-                        <button class="sys-btn" onclick="sendCommand('SYSTEM_RESET')">
-                            <i class="fas fa-redo"></i> Reset Counters
-                        </button>
-                        <button class="sys-btn" onclick="sendCommand('TEST_ARDUINO')">
-                            <i class="fas fa-vial"></i> Test Arduino
-                        </button>
-                    </div>
-
-                                   <!-- MANUAL Mode Section (visible when MANUAL active) -->
-                <div id="manualSection" class="mode-section active">
-                <!-- Manual separator buttons (no labels) -->
-                    <div class="separator-controls">
-                        <h3><i class="fas fa-cog"></i> Manual Separation</h3>
-                        <div class="separator-btns">
-                            <button class="sep-btn" style="background: #ff6b6b;" onclick="sendCommand('SEPARATOR_1')">
-                                <i class="fas fa-cog"></i>
-                            </button>
-                            <button class="sep-btn" style="background: #4ecdc4;" onclick="sendCommand('SEPARATOR_2')">
-                                <i class="fas fa-cog"></i>
-                            </button>
-                            <button class="sep-btn" style="background: #1dd1a1;" onclick="sendCommand('SEPARATOR_3')">
-                                <i class="fas fa-cog"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    </section>
                 </div>
             </div>
 
-            <!-- Profile Modal -->
-            <div class="modal" id="profileModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>Edit Profile</h2>
-                        <span class="close-modal" onclick="closeProfileModal()">&times;</span>
+            <!-- Profile Tab Content -->
+            <div class="tab-content" id="profileTab">
+                <div class="profile-content">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileAvatar">U</div>
+                        <div class="profile-name" id="profileName">User Name</div>
+                        <div class="profile-email" id="profileEmail">user@example.com</div>
                     </div>
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="editName" class="form-input" placeholder="Your name">
+
+                    <!-- Profile Stats -->
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileCollections">0</div>
+                            <div class="stat-desc">Collections</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileUptime">0d</div>
+                            <div class="stat-desc">Uptime</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="profileSignal">0</div>
+                            <div class="stat-desc">Signal</div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="editEmail" class="form-input" placeholder="Email">
+
+                    <!-- Profile Form -->
+                    <div class="profile-form">
+                        <div class="form-section">
+                            <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="editName" class="form-input" placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="editEmail" class="form-input" placeholder="Enter your email">
+                            </div>
+                            <button class="btn btn-primary" onclick="updateProfile()" style="width: 100%;">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+                            </div>
+                            <button class="btn btn-primary" onclick="changePassword()" style="width: 100%;">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
                     </div>
-                    <button class="btn btn-primary" onclick="updateProfile()">Save Changes</button>
-                    <hr style="margin:20px 0">
-                    <h3>Change Password</h3>
-                    <div class="form-group">
-                        <label>Current Password</label>
-                        <input type="password" id="currentPassword" class="form-input">
+
+                    <!-- Profile Actions -->
+                    <div class="profile-actions">
+                        <div class="action-card" onclick="sendCommand('CONVEYOR_START')">
+                            <div class="action-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="action-text">
+                                <h4>Quick Start</h4>
+                                <p>Start the conveyor system</p>
+                            </div>
+                        </div>
+
+                        <div class="action-card" onclick="refreshData()">
+                            <div class="action-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <div class="action-text">
+                                <h4>Refresh Data</h4>
+                                <p>Update all system information</p>
+                            </div>
+                        </div>
+
+                        <div class="action-card" onclick="logout()">
+                            <div class="action-icon" style="background: linear-gradient(135deg, #f44336, #d32f2f);">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <div class="action-text">
+                                <h4>Logout</h4>
+                                <p>Sign out from your account</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>New Password</label>
-                        <input type="password" id="newPassword" class="form-input">
-                    </div>
-                    <div class="form-group">
-                        <label>Confirm</label>
-                        <input type="password" id="confirmPassword" class="form-input">
-                    </div>
-                    <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
-                    <hr style="margin:20px 0">
-                    <button class="btn" style="background:#f1f5f9;" onclick="logout()">Logout</button>
                 </div>
             </div>
+
+            <!-- Tab Bar -->
+            <nav class="tab-bar">
+                <a class="tab-item active" data-tab="dashboardTab" onclick="switchTab('dashboardTab')">
+                    <div class="tab-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="tab-label">Home</div>
+                </a>
+                
+                <a class="tab-item" data-tab="profileTab" onclick="switchTab('profileTab')">
+                    <div class="tab-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="tab-label">Profile</div>
+                </a>
+            </nav>
         </div>
     </div>
 
@@ -841,7 +1306,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
+    
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -854,9 +1319,12 @@
             appId: "1:20313951406:web:4a22aa1d78db7eca72f13f"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
+
+        // Device ID (Update this to match your ESP32 device ID)
         const DEVICE_ID = "ESP32_GARBAGE_SORTER";
 
         // DOM Elements
@@ -865,187 +1333,272 @@
         const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
         const userAvatar = document.getElementById('userAvatar');
-        const statusText = document.getElementById('statusText'); // still used
-        const statusDot = document.getElementById('statusDot'); // still used
+        const profileAvatar = document.getElementById('profileAvatar');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
         const notification = document.getElementById('notification');
+        const appTitle = document.getElementById('appTitle');
+        const appSubtitle = document.getElementById('appSubtitle');
 
-        // New elements
-        const modeManual = document.getElementById('modeManual');
-        const modeAuto = document.getElementById('modeAuto');
-        const manualSection = document.getElementById('manualSection');
-        const autoSection = document.getElementById('autoSection');
-        const profileIcon = document.getElementById('profileIcon');
-        const profileModal = document.getElementById('profileModal');
+        // Tab Management
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update active tab in tab bar
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update header title
+            if (tabId === 'dashboardTab') {
+                appTitle.textContent = 'Dashboard';
+                appSubtitle.textContent = 'Smart Garbage Collector';
+            } else if (tabId === 'profileTab') {
+                appTitle.textContent = 'Profile';
+                appSubtitle.textContent = 'Account Settings';
+            }
+        }
 
-        // Mode toggle
-        modeManual.addEventListener('click', () => {
-            modeManual.classList.add('active');
-            modeAuto.classList.remove('active');
-            manualSection.classList.add('active');
-            autoSection.classList.remove('active');
-        });
-        modeAuto.addEventListener('click', () => {
-            modeAuto.classList.add('active');
-            modeManual.classList.remove('active');
-            autoSection.classList.add('active');
-            manualSection.classList.remove('active');
-        });
-
-        // Profile modal
-        profileIcon.addEventListener('click', () => {
-            profileModal.classList.add('active');
-            const user = auth.currentUser;
-            if (user) {
-                document.getElementById('editName').value = user.displayName || '';
-                document.getElementById('editEmail').value = user.email || '';
+        // Firebase Connection Monitor
+        database.ref('.info/connected').on('value', (snap) => {
+            if (snap.val() === true) {
+                updateStatusIndicator('online', 'Connected');
+            } else {
+                updateStatusIndicator('offline', 'Disconnected');
             }
         });
-        window.closeProfileModal = () => profileModal.classList.remove('active');
 
-        // Authentication state
+        // Authentication State
         auth.onAuthStateChanged((user) => {
             if (user) {
+                // User is signed in
                 authScreen.classList.add('hidden');
                 appScreen.classList.add('active');
+                
+                // Update user info
                 updateUserInfo(user);
+                
                 showNotification('success', 'Welcome Back!', `Logged in as ${user.email}`);
+                
+                // Start listening to device data
                 startDeviceListeners();
-                // Default to manual mode
-                modeManual.click();
+                
+                // Set default tab
+                switchTab('dashboardTab');
             } else {
+                // User is signed out
                 authScreen.classList.remove('hidden');
                 appScreen.classList.remove('active');
             }
         });
 
+        // Update User Information
         function updateUserInfo(user) {
             const name = user.displayName || 'User';
+            const email = user.email || 'user@example.com';
             const initial = name.charAt(0).toUpperCase();
+            
             userAvatar.textContent = initial;
+            profileAvatar.textContent = initial;
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileEmail').textContent = email;
             document.getElementById('editName').value = name;
-            document.getElementById('editEmail').value = user.email || '';
+            document.getElementById('editEmail').value = email;
         }
 
-        // Auth UI functions
-        window.showSignup = () => { loginForm.style.display = 'none'; signupForm.style.display = 'block'; };
-        window.showLogin = () => { signupForm.style.display = 'none'; loginForm.style.display = 'block'; };
+        // UI Functions
+        function showSignup() {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        }
 
-        window.login = function() {
+        function showLogin() {
+            signupForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        }
+
+        // Auth Functions
+        function login() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            if (!email || !password) return showNotification('error', 'Error', 'Please enter email and password');
-            auth.signInWithEmailAndPassword(email, password).catch(e => showNotification('error', 'Login Failed', e.message));
-        };
+            
+            if (!email || !password) {
+                showNotification('error', 'Error', 'Please enter email and password');
+                return;
+            }
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .catch((error) => {
+                    showNotification('error', 'Login Failed', error.message);
+                });
+        }
 
-        window.signup = function() {
+        function signup() {
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
-            if (!name || !email || !password) return showNotification('error', 'Error', 'Please fill all fields');
-            if (password.length < 6) return showNotification('error', 'Error', 'Password must be at least 6 characters');
+            
+            if (!name || !email || !password) {
+                showNotification('error', 'Error', 'Please fill all fields');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showNotification('error', 'Error', 'Password must be at least 6 characters');
+                return;
+            }
+            
             auth.createUserWithEmailAndPassword(email, password)
-                .then(cred => cred.user.updateProfile({ displayName: name }))
-                .then(() => { showNotification('success', 'Account Created', 'Welcome!'); showLogin(); })
-                .catch(e => showNotification('error', 'Signup Failed', e.message));
-        };
+                .then((userCredential) => {
+                    // Update profile with name
+                    return userCredential.user.updateProfile({
+                        displayName: name
+                    });
+                })
+                .then(() => {
+                    showNotification('success', 'Account Created', 'Welcome to the system!');
+                    showLogin();
+                })
+                .catch((error) => {
+                    showNotification('error', 'Signup Failed', error.message);
+                });
+        }
 
-        window.logout = () => auth.signOut();
+        function logout() {
+            auth.signOut()
+                .then(() => {
+                    showNotification('success', 'Logged Out', 'Successfully logged out');
+                })
+                .catch((error) => {
+                    console.error('Logout error:', error);
+                });
+        }
 
-        window.updateProfile = function() {
+        function updateProfile() {
             const user = auth.currentUser;
             const newName = document.getElementById('editName').value;
             const newEmail = document.getElementById('editEmail').value;
-            if (!user) return;
-            Promise.all([
-                newName && newName !== user.displayName ? user.updateProfile({ displayName: newName }) : Promise.resolve(),
-                newEmail && newEmail !== user.email ? user.updateEmail(newEmail) : Promise.resolve()
-            ]).then(() => {
-                showNotification('success', 'Profile updated');
-                closeProfileModal();
-                updateUserInfo(user);
-            }).catch(e => showNotification('error', e.message));
-        };
+            
+            if (user) {
+                const promises = [];
+                
+                if (newName && newName !== user.displayName) {
+                    promises.push(user.updateProfile({
+                        displayName: newName
+                    }));
+                }
+                
+                if (newEmail && newEmail !== user.email) {
+                    promises.push(user.updateEmail(newEmail));
+                }
+                
+                if (promises.length > 0) {
+                    Promise.all(promises)
+                        .then(() => {
+                            updateUserInfo(user);
+                            showNotification('success', 'Profile Updated', 'Your profile has been updated');
+                        })
+                        .catch((error) => {
+                            showNotification('error', 'Update Failed', error.message);
+                        });
+                }
+            }
+        }
 
-        window.changePassword = function() {
+        function changePassword() {
             const user = auth.currentUser;
-            const current = document.getElementById('currentPassword').value;
+            const currentPass = document.getElementById('currentPassword').value;
             const newPass = document.getElementById('newPassword').value;
-            const confirm = document.getElementById('confirmPassword').value;
-            if (!current || !newPass || !confirm) return showNotification('error', 'Fill all fields');
-            if (newPass !== confirm) return showNotification('error', 'Passwords do not match');
-            if (newPass.length < 6) return showNotification('error', 'Password must be at least 6 characters');
-            const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
-            user.reauthenticateWithCredential(cred)
-                .then(() => user.updatePassword(newPass))
+            const confirmPass = document.getElementById('confirmPassword').value;
+            
+            if (!currentPass || !newPass || !confirmPass) {
+                showNotification('error', 'Error', 'Please fill all password fields');
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                showNotification('error', 'Error', 'New passwords do not match');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                showNotification('error', 'Error', 'Password must be at least 6 characters');
+                return;
+            }
+            
+            // Reauthenticate user first
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPass);
+            
+            user.reauthenticateWithCredential(credential)
                 .then(() => {
-                    showNotification('success', 'Password changed');
+                    return user.updatePassword(newPass);
+                })
+                .then(() => {
+                    // Clear password fields
                     document.getElementById('currentPassword').value = '';
                     document.getElementById('newPassword').value = '';
                     document.getElementById('confirmPassword').value = '';
-                    closeProfileModal();
+                    
+                    showNotification('success', 'Password Changed', 'Your password has been updated');
                 })
-                .catch(e => showNotification('error', e.message));
-        };
+                .catch((error) => {
+                    showNotification('error', 'Password Change Failed', error.message);
+                });
+        }
 
-        // Device listeners
+        // Device Data Listeners
         function startDeviceListeners() {
+            // Listen to device status
             database.ref('devices/' + DEVICE_ID + '/status').on('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                updateUI(data);
+                const data = snapshot.val();
+                if (data) {
+                    updateDashboard(data);
+                }
             });
-
-            database.ref('.info/connected').on('value', (snap) => {
-                if (snap.val() === true) {
-                    statusText.textContent = 'Connected';
-                    statusDot.style.background = '#4CAF50';
-                } else {
-                    statusText.textContent = 'Disconnected';
-                    statusDot.style.background = '#f44336';
+            
+            // Listen to statistics
+            const today = new Date().toISOString().split('T')[0];
+            database.ref('statistics/' + today).on('value', (snapshot) => {
+                const stats = snapshot.val();
+                if (stats) {
+                    updateStatistics(stats);
                 }
             });
         }
 
-        // Update all UI elements based on device data
-        function updateUI(data) {
-            const aluminium = data.box2_level || 0;    // box2 = metal (aluminium)
-            const organic = data.box3_level || 0;      // box3 = organic (wet)
-            const plastic = data.box1_level || 0;       // box1 = plastic (dry)
-            const garbageCount = data.garbage_count || 0;
-            const conveyor = data.conveyor_status || 'STOP';
-            const vehicle = data.vehicle_status || 'STOP';
-            const rssi = data.rssi || 0;
-
-            // Auto mode - sensors
-            document.getElementById('metalSensor').textContent = aluminium + '%';
-            document.getElementById('wetSensor').textContent = organic + '%';
-
-            // Bin labels and progress bars (updated IDs)
-            document.getElementById('metalBinLabel').textContent = aluminium + '%';
-            document.getElementById('organicBinLabel').textContent = organic + '%';
-            document.getElementById('plasticBinLabel').textContent = plastic + '%';
-
-            document.getElementById('metalBar').style.width = aluminium + '%';
-            document.getElementById('organicBar').style.width = organic + '%';
-            document.getElementById('plasticBar').style.width = plastic + '%';
-
-            document.getElementById('metalPercent').textContent = aluminium + '%';
-            document.getElementById('organicPercent').textContent = organic + '%';
-            document.getElementById('plasticPercent').textContent = plastic + '%';
-
-            // History (kg) – assume max 10kg per bin
-            document.getElementById('aluminiumHistory').textContent = (aluminium / 10).toFixed(1) + ' kg';
-            document.getElementById('organicHistory').textContent = (organic / 10).toFixed(1) + ' kg';
-            document.getElementById('plasticHistory').textContent = (plastic / 10).toFixed(1) + ' kg';
-
-            // Battery (static for now, can be from data)
-            document.getElementById('batteryLevel').textContent = '85%';
-
-            // Robot status
-            if (conveyor === 'RUNNING') {
+        // Update Functions
+        function updateDashboard(data) {
+            // Update main stats
+            document.getElementById('totalCollections').textContent = data.garbage_count || 0;
+            document.getElementById('currentBox').textContent = data.current_box || 1;
+            document.getElementById('conveyorStatus').textContent = data.conveyor_status || 'STOP';
+            document.getElementById('signalStrength').textContent = data.rssi || 0;
+            
+            // Update box data
+            document.getElementById('box1Level').textContent = (data.box1_level || 0) + '%';
+            document.getElementById('box2Level').textContent = (data.box2_level || 0) + '%';
+            document.getElementById('box3Level').textContent = (data.box3_level || 0) + '%';
+            
+            // Update fill bars
+            document.getElementById('box1FillBar').style.width = (data.box1_level || 0) + '%';
+            document.getElementById('box2FillBar').style.width = (data.box2_level || 0) + '%';
+            document.getElementById('box3FillBar').style.width = (data.box3_level || 0) + '%';
+            
+            // Update status text
+            if (data.conveyor_status === 'RUNNING') {
                 document.getElementById('robotStatusText').textContent = 'Conveyor Running';
                 statusText.textContent = 'Running';
                 statusDot.style.background = '#4cc9f0';
-            } else if (vehicle !== 'STOP') {
+            } else if (data.vehicle_status !== 'STOP') {
                 document.getElementById('robotStatusText').textContent = 'Vehicle Moving';
                 statusText.textContent = 'Moving';
                 statusDot.style.background = '#f72585';
@@ -1054,47 +1607,117 @@
                 statusText.textContent = 'Idle';
                 statusDot.style.background = '#4CAF50';
             }
+            
+            // Update profile stats
+            document.getElementById('profileCollections').textContent = data.garbage_count || 0;
+            document.getElementById('profileUptime').textContent = formatSeconds(data.uptime_seconds || 0);
+            document.getElementById('profileSignal').textContent = data.rssi || 0;
         }
 
-        // Send command
-        window.sendCommand = function(action) {
+        function updateStatistics(stats) {
+            // You can add additional statistics here if needed
+        }
+
+        function updateStatusIndicator(status, message) {
+            if (status === 'online') {
+                statusText.textContent = message;
+            } else {
+                statusText.textContent = message;
+            }
+        }
+
+        // Command Functions
+        function sendCommand(action) {
             const user = auth.currentUser;
-            if (!user) return showNotification('error', 'Not Logged In', 'Please login to send commands');
-            database.ref('devices/' + DEVICE_ID + '/commands').push({
+            if (!user) {
+                showNotification('error', 'Not Logged In', 'Please login to send commands');
+                return;
+            }
+
+            const commandData = {
                 action: action,
                 user_id: user.uid,
-                timestamp: Date.now()
-            }).then(() => {
-                showNotification('success', 'Command Sent', action.replace(/_/g, ' '));
-            }).catch(e => showNotification('error', 'Command Failed', e.message));
-        };
+                user_email: user.email,
+                timestamp: new Date().toISOString(),
+                pending: true
+            };
 
-        // Notification functions
+            database.ref('devices/' + DEVICE_ID + '/commands').set(commandData)
+                .then(() => {
+                    showNotification('success', 'Command Sent', `${action.replace('_', ' ')} command sent to device`);
+                })
+                .catch((error) => {
+                    showNotification('error', 'Command Failed', error.message);
+                });
+        }
+
+        // Helper Functions
+        function formatSeconds(seconds) {
+            if (seconds < 60) return seconds + 's';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+            return Math.floor(seconds / 86400) + 'd';
+        }
+
+        function refreshData() {
+            showNotification('info', 'Refreshing', 'Updating system data...');
+            // This would trigger a manual refresh of data
+            // For now, we'll just show a notification
+            setTimeout(() => {
+                showNotification('success', 'Refreshed', 'System data updated');
+            }, 1000);
+        }
+
         function showNotification(type, title, message) {
             const icon = document.getElementById('notificationIcon');
             const notificationTitle = document.getElementById('notificationTitle');
             const notificationMessage = document.getElementById('notificationMessage');
-            const n = document.getElementById('notification');
-            if (type === 'success') { icon.className = 'fas fa-check-circle'; icon.style.color = '#4CAF50'; n.className = 'notification success'; }
-            else if (type === 'error') { icon.className = 'fas fa-exclamation-circle'; icon.style.color = '#f44336'; n.className = 'notification error'; }
-            else { icon.className = 'fas fa-info-circle'; icon.style.color = '#2196F3'; n.className = 'notification'; }
+            
+            // Set icon based on type
+            switch(type) {
+                case 'success':
+                    icon.className = 'fas fa-check-circle';
+                    icon.style.color = '#4CAF50';
+                    notification.className = 'notification success';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-circle';
+                    icon.style.color = '#f44336';
+                    notification.className = 'notification error';
+                    break;
+                case 'warning':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    icon.style.color = '#FF9800';
+                    notification.className = 'notification warning';
+                    break;
+                case 'info':
+                    icon.className = 'fas fa-info-circle';
+                    icon.style.color = '#2196F3';
+                    notification.className = 'notification';
+                    break;
+            }
+            
             notificationTitle.textContent = title;
             notificationMessage.textContent = message;
-            n.classList.remove('hidden');
+            notification.classList.remove('hidden');
+            
+            // Auto hide after 5 seconds
             setTimeout(hideNotification, 5000);
         }
-        window.hideNotification = () => document.getElementById('notification').classList.add('hidden');
 
-        // Refresh data (dummy)
-        window.refreshData = function() {
-            showNotification('info', 'Refreshing', 'Updating system data...');
-            setTimeout(() => showNotification('success', 'Refreshed', 'System data updated'), 1000);
-        };
+        function hideNotification() {
+            notification.classList.add('hidden');
+        }
 
-        // Close modal on outside click
-        window.onclick = function(e) {
-            if (e.target === profileModal) closeProfileModal();
-        };
+        // Initialize
+        console.log('Smart Garbage Collector App Loaded');
+        
+        // Auto-hide notification on click outside
+        document.addEventListener('click', (e) => {
+            if (!notification.contains(e.target) && !notification.classList.contains('hidden')) {
+                hideNotification();
+            }
+        });
     </script>
 </body>
 </html>
