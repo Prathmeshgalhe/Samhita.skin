@@ -6,6 +6,7 @@
     <title>Smart Garbage Collector</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         /* ===== VARIABLES ===== */
         :root {
@@ -196,7 +197,7 @@
         .app-screen {
             display: none;
             min-height: 100vh;
-            padding-bottom: 80px;
+            padding-bottom: 80px; /* Space for tab bar */
         }
 
         .app-screen.active {
@@ -296,41 +297,41 @@
             padding: 20px;
         }
 
-        /* Stats Overview - 2x2 grid */
+        /* Stats Overview */
         .stats-overview {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 15px;
             margin-bottom: 25px;
         }
 
         .stat-card {
             background: white;
             border-radius: 16px;
-            padding: 15px 10px;
+            padding: 20px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             text-align: center;
             border: 1px solid #e0e0e0;
         }
 
         .stat-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 28px;
+            margin-bottom: 10px;
             color: var(--primary);
         }
 
         .stat-value {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: 700;
-            margin: 5px 0;
+            margin: 10px 0;
             color: var(--dark);
         }
 
         .stat-label {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--gray);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         /* Box Status */
@@ -463,6 +464,7 @@
             color: var(--dark);
         }
 
+        /* Robot Control Layout */
         .robot-control {
             display: flex;
             flex-direction: column;
@@ -556,15 +558,16 @@
             transform: translateY(0);
         }
 
-        /* System Controls (only Reset Counters now) */
+        /* System Controls */
         .system-controls {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
             margin-top: 20px;
         }
 
         .sys-btn {
-            padding: 14px 30px;
+            padding: 14px;
             border: 2px solid var(--primary);
             border-radius: 12px;
             background: white;
@@ -573,7 +576,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -584,147 +587,48 @@
             color: white;
         }
 
-        /* ===== OPERATIONS TAB ===== */
-        .operations-content {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Collapsible Card */
-        .ops-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-            border: 1px solid #e0e0e0;
-            overflow: hidden;
-        }
-
-        .card-header {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .card-header h3 {
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toggle-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.3s;
-        }
-
-        .toggle-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .card-content {
-            padding: 20px;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-        }
-
-        .ops-card.minimized .card-content {
-            display: none;
-        }
-
-        /* Automatic separation data */
-        .auto-data-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+        /* Manual separator buttons */
+        .separator-controls {
+            margin-top: 20px;
             text-align: center;
         }
 
-        .auto-data-item {
-            padding: 15px;
-            border-radius: 12px;
-            background: #f8f9fa;
-        }
-
-        .auto-data-item .box-color {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-        }
-
-        .box1-color { background: var(--box1); }
-        .box2-color { background: var(--box2); }
-        .box3-color { background: var(--box3); }
-
-        .auto-data-item .box-level {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 10px 0 5px;
-        }
-
-        .auto-data-item .box-label {
-            font-size: 14px;
+        .separator-controls h3 {
+            font-size: 16px;
             color: var(--gray);
+            margin-bottom: 10px;
         }
 
-        /* Manual separation buttons */
-        .manual-buttons {
+        .separator-btns {
             display: flex;
-            justify-content: space-around;
             gap: 15px;
+            justify-content: center;
             flex-wrap: wrap;
         }
 
-        .manual-sep-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 20px;
+        .sep-btn {
+            width: 60px;
+            height: 60px;
             border: none;
-            border-radius: 16px;
+            border-radius: 50%;
             color: white;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 24px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .manual-sep-btn i {
-            font-size: 28px;
+        .sep-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
         }
 
-        .manual-sep-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        .sep-btn:active {
+            transform: scale(0.95);
         }
-
-        .manual-sep-btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-plastic { background: var(--box1); }
-        .btn-metal { background: var(--box2); }
-        .btn-organic { background: var(--box3); }
 
         /* ===== PROFILE TAB ===== */
         .profile-content {
@@ -976,42 +880,37 @@
         /* Responsive Design */
         @media (max-width: 480px) {
             .stats-overview {
-                gap: 8px;
+                grid-template-columns: 1fr;
             }
-            .stat-card {
-                padding: 12px 5px;
-            }
-            .stat-value {
-                font-size: 20px;
-            }
-            .stat-icon {
-                font-size: 20px;
-            }
+            
             .boxes-grid {
                 grid-template-columns: 1fr;
             }
+            
             .control-btn {
                 width: 60px;
                 height: 60px;
                 font-size: 20px;
             }
+            
+            .system-controls {
+                grid-template-columns: 1fr;
+            }
+            
             .profile-stats {
                 grid-template-columns: 1fr;
             }
+            
             .tab-bar {
                 padding: 12px 5px;
             }
+            
             .tab-icon {
                 font-size: 20px;
             }
+            
             .tab-label {
                 font-size: 11px;
-            }
-            .auto-data-grid {
-                grid-template-columns: 1fr;
-            }
-            .manual-buttons {
-                flex-direction: column;
             }
         }
 
@@ -1057,7 +956,7 @@
                         
                         <div class="auth-footer">
                             Don't have an account? 
-                            <a href="#" class="auth-link" onclick="showSignup(); return false;">Sign Up</a>
+                            <a href="#" class="auth-link" onclick="showSignup()">Sign Up</a>
                         </div>
                     </form>
 
@@ -1084,7 +983,7 @@
                         
                         <div class="auth-footer">
                             Already have an account? 
-                            <a href="#" class="auth-link" onclick="showLogin(); return false;">Sign In</a>
+                            <a href="#" class="auth-link" onclick="showLogin()">Sign In</a>
                         </div>
                     </form>
                 </div>
@@ -1116,10 +1015,10 @@
                 </div>
             </header>
 
-            <!-- Dashboard Tab -->
+            <!-- Dashboard Tab Content -->
             <div class="tab-content active" id="dashboardTab">
                 <div class="dashboard-content">
-                    <!-- Stats Overview - 2x2 -->
+                    <!-- Stats Overview -->
                     <div class="stats-overview">
                         <div class="stat-card">
                             <div class="stat-icon">
@@ -1142,7 +1041,7 @@
                                 <i class="fas fa-bolt"></i>
                             </div>
                             <div class="stat-value" id="conveyorStatus">STOP</div>
-                            <div class="stat-label">Conveyor</div>
+                            <div class="stat-label">Conveyor Status</div>
                         </div>
                         
                         <div class="stat-card">
@@ -1155,7 +1054,52 @@
                     </div>
 
                     <!-- Box Status -->
-                    
+                    <section class="boxes-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-boxes"></i> Box Fill Status
+                        </h2>
+                        
+                        <div class="boxes-grid">
+                            <!-- Box 1 -->
+                            <div class="box-card box1">
+                                <div class="box-title">Box 1</div>
+                                <div class="box-type">Plastic Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box1Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box1FillBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Box 2 -->
+                            <div class="box-card box2">
+                                <div class="box-title">Box 2</div>
+                                <div class="box-type">Metal Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box2Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box2FillBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Box 3 -->
+                            <div class="box-card box3">
+                                <div class="box-title">Box 3</div>
+                                <div class="box-type">Organic Waste</div>
+                                
+                                <div class="fill-display">
+                                    <div class="fill-percentage" id="box3Level">0%</div>
+                                    <div class="fill-bar">
+                                        <div class="fill-level" id="box3FillBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <!-- Robot Control -->
                     <section class="control-section">
@@ -1199,75 +1143,39 @@
                                 </button>
                             </div>
                             
-                            <!-- Only Reset Counters button remains -->
                             <div class="system-controls">
                                 <button class="sys-btn" onclick="sendCommand('SYSTEM_RESET')">
                                     <i class="fas fa-redo"></i>
                                     Reset Counters
                                 </button>
+                                
+                                <button class="sys-btn" onclick="sendCommand('TEST_ARDUINO')">
+                                    <i class="fas fa-vial"></i>
+                                    Test Arduino
+                                </button>
+                            </div>
+
+                            <!-- Manual separator buttons (no labels) -->
+                            <div class="separator-controls">
+                                <h3><i class="fas fa-cog"></i> Manual Separation</h3>
+                                <div class="separator-btns">
+                                    <button class="sep-btn" style="background: #ff6b6b;" onclick="sendCommand('SEPARATOR_1')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="sep-btn" style="background: #4ecdc4;" onclick="sendCommand('SEPARATOR_2')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <button class="sep-btn" style="background: #1dd1a1;" onclick="sendCommand('SEPARATOR_3')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </section>
                 </div>
             </div>
 
-            <!-- New Operations Tab -->
-            <div class="tab-content" id="operationsTab">
-                <div class="operations-content">
-                    <!-- Card 1: Automatic Separation Data -->
-                    <div class="ops-card" id="autoCard">
-                        <div class="card-header" onclick="toggleCard('autoCard')">
-                            <h3><i class="fas fa-robot"></i> Automatic Separation Data</h3>
-                            <button class="toggle-btn" id="autoToggle"><i class="fas fa-minus"></i></button>
-                        </div>
-                        <div class="card-content">
-                            <div class="auto-data-grid">
-                                <div class="auto-data-item">
-                                    <div class="box-color box1-color"></div>
-                                    <div class="box-level" id="autoBox1Level">0%</div>
-                                    <div class="box-label">Plastic</div>
-                                </div>
-                                <div class="auto-data-item">
-                                    <div class="box-color box2-color"></div>
-                                    <div class="box-level" id="autoBox2Level">0%</div>
-                                    <div class="box-label">Metal</div>
-                                </div>
-                                <div class="auto-data-item">
-                                    <div class="box-color box3-color"></div>
-                                    <div class="box-level" id="autoBox3Level">0%</div>
-                                    <div class="box-label">Organic</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: Manual Separation -->
-                    <div class="ops-card" id="manualCard">
-                        <div class="card-header" onclick="toggleCard('manualCard')">
-                            <h3><i class="fas fa-hand-paper"></i> Manual Separation</h3>
-                            <button class="toggle-btn" id="manualToggle"><i class="fas fa-minus"></i></button>
-                        </div>
-                        <div class="card-content">
-                            <div class="manual-buttons">
-                                <button class="manual-sep-btn btn-plastic" onclick="sendCommand('SEPARATOR_1')">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Plastic</span>
-                                </button>
-                                <button class="manual-sep-btn btn-metal" onclick="sendCommand('SEPARATOR_2')">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Metal</span>
-                                </button>
-                                <button class="manual-sep-btn btn-organic" onclick="sendCommand('SEPARATOR_3')">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Organic</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Profile Tab -->
+            <!-- Profile Tab Content -->
             <div class="tab-content" id="profileTab">
                 <div class="profile-content">
                     <!-- Profile Header -->
@@ -1365,20 +1273,13 @@
                 </div>
             </div>
 
-            <!-- Tab Bar with new Operations tab -->
+            <!-- Tab Bar -->
             <nav class="tab-bar">
                 <a class="tab-item active" data-tab="dashboardTab" onclick="switchTab('dashboardTab')">
                     <div class="tab-icon">
                         <i class="fas fa-home"></i>
                     </div>
                     <div class="tab-label">Home</div>
-                </a>
-                
-                <a class="tab-item" data-tab="operationsTab" onclick="switchTab('operationsTab')">
-                    <div class="tab-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <div class="tab-label">Operations</div>
                 </a>
                 
                 <a class="tab-item" data-tab="profileTab" onclick="switchTab('profileTab')">
@@ -1441,11 +1342,15 @@
 
         // Tab Management
         function switchTab(tabId) {
+            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
+            
+            // Show selected tab
             document.getElementById(tabId).classList.add('active');
             
+            // Update active tab in tab bar
             document.querySelectorAll('.tab-item').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.dataset.tab === tabId) {
@@ -1457,9 +1362,6 @@
             if (tabId === 'dashboardTab') {
                 appTitle.textContent = 'Dashboard';
                 appSubtitle.textContent = 'Smart Garbage Collector';
-            } else if (tabId === 'operationsTab') {
-                appTitle.textContent = 'Operations';
-                appSubtitle.textContent = 'Separation Controls';
             } else if (tabId === 'profileTab') {
                 appTitle.textContent = 'Profile';
                 appSubtitle.textContent = 'Account Settings';
@@ -1478,13 +1380,22 @@
         // Authentication State
         auth.onAuthStateChanged((user) => {
             if (user) {
+                // User is signed in
                 authScreen.classList.add('hidden');
                 appScreen.classList.add('active');
+                
+                // Update user info
                 updateUserInfo(user);
+                
                 showNotification('success', 'Welcome Back!', `Logged in as ${user.email}`);
+                
+                // Start listening to device data
                 startDeviceListeners();
+                
+                // Set default tab
                 switchTab('dashboardTab');
             } else {
+                // User is signed out
                 authScreen.classList.remove('hidden');
                 appScreen.classList.remove('active');
             }
@@ -1548,6 +1459,7 @@
             
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
+                    // Update profile with name
                     return userCredential.user.updateProfile({
                         displayName: name
                     });
@@ -1623,6 +1535,7 @@
                 return;
             }
             
+            // Reauthenticate user first
             const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPass);
             
             user.reauthenticateWithCredential(credential)
@@ -1630,9 +1543,11 @@
                     return user.updatePassword(newPass);
                 })
                 .then(() => {
+                    // Clear password fields
                     document.getElementById('currentPassword').value = '';
                     document.getElementById('newPassword').value = '';
                     document.getElementById('confirmPassword').value = '';
+                    
                     showNotification('success', 'Password Changed', 'Your password has been updated');
                 })
                 .catch((error) => {
@@ -1642,38 +1557,43 @@
 
         // Device Data Listeners
         function startDeviceListeners() {
+            // Listen to device status
             database.ref('devices/' + DEVICE_ID + '/status').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     updateDashboard(data);
-                    updateOperations(data);
                 }
             });
             
+            // Listen to statistics
             const today = new Date().toISOString().split('T')[0];
             database.ref('statistics/' + today).on('value', (snapshot) => {
                 const stats = snapshot.val();
                 if (stats) {
-                    // updateStatistics(stats);
+                    updateStatistics(stats);
                 }
             });
         }
 
-        // Update Dashboard
+        // Update Functions
         function updateDashboard(data) {
+            // Update main stats
             document.getElementById('totalCollections').textContent = data.garbage_count || 0;
             document.getElementById('currentBox').textContent = data.current_box || 1;
             document.getElementById('conveyorStatus').textContent = data.conveyor_status || 'STOP';
             document.getElementById('signalStrength').textContent = data.rssi || 0;
             
+            // Update box data
             document.getElementById('box1Level').textContent = (data.box1_level || 0) + '%';
             document.getElementById('box2Level').textContent = (data.box2_level || 0) + '%';
             document.getElementById('box3Level').textContent = (data.box3_level || 0) + '%';
             
+            // Update fill bars
             document.getElementById('box1FillBar').style.width = (data.box1_level || 0) + '%';
             document.getElementById('box2FillBar').style.width = (data.box2_level || 0) + '%';
             document.getElementById('box3FillBar').style.width = (data.box3_level || 0) + '%';
             
+            // Update status text
             if (data.conveyor_status === 'RUNNING') {
                 document.getElementById('robotStatusText').textContent = 'Conveyor Running';
                 statusText.textContent = 'Running';
@@ -1688,20 +1608,22 @@
                 statusDot.style.background = '#4CAF50';
             }
             
+            // Update profile stats
             document.getElementById('profileCollections').textContent = data.garbage_count || 0;
             document.getElementById('profileUptime').textContent = formatSeconds(data.uptime_seconds || 0);
             document.getElementById('profileSignal').textContent = data.rssi || 0;
         }
 
-        // Update Operations Tab
-        function updateOperations(data) {
-            document.getElementById('autoBox1Level').textContent = (data.box1_level || 0) + '%';
-            document.getElementById('autoBox2Level').textContent = (data.box2_level || 0) + '%';
-            document.getElementById('autoBox3Level').textContent = (data.box3_level || 0) + '%';
+        function updateStatistics(stats) {
+            // You can add additional statistics here if needed
         }
 
         function updateStatusIndicator(status, message) {
-            statusText.textContent = message;
+            if (status === 'online') {
+                statusText.textContent = message;
+            } else {
+                statusText.textContent = message;
+            }
         }
 
         // Command Functions
@@ -1720,27 +1642,13 @@
                 pending: true
             };
 
-            database.ref('devices/' + DEVICE_ID + '/commands').push(commandData) // Use push for queue
+            database.ref('devices/' + DEVICE_ID + '/commands').set(commandData)
                 .then(() => {
-                    showNotification('success', 'Command Sent', `${action.replace(/_/g, ' ')} command sent to device`);
+                    showNotification('success', 'Command Sent', `${action.replace('_', ' ')} command sent to device`);
                 })
                 .catch((error) => {
                     showNotification('error', 'Command Failed', error.message);
                 });
-        }
-
-        // Collapsible Cards
-        function toggleCard(cardId) {
-            const card = document.getElementById(cardId);
-            const toggleBtn = card.querySelector('.toggle-btn i');
-            card.classList.toggle('minimized');
-            if (card.classList.contains('minimized')) {
-                toggleBtn.classList.remove('fa-minus');
-                toggleBtn.classList.add('fa-plus');
-            } else {
-                toggleBtn.classList.remove('fa-plus');
-                toggleBtn.classList.add('fa-minus');
-            }
         }
 
         // Helper Functions
@@ -1753,6 +1661,8 @@
 
         function refreshData() {
             showNotification('info', 'Refreshing', 'Updating system data...');
+            // This would trigger a manual refresh of data
+            // For now, we'll just show a notification
             setTimeout(() => {
                 showNotification('success', 'Refreshed', 'System data updated');
             }, 1000);
@@ -1763,6 +1673,7 @@
             const notificationTitle = document.getElementById('notificationTitle');
             const notificationMessage = document.getElementById('notificationMessage');
             
+            // Set icon based on type
             switch(type) {
                 case 'success':
                     icon.className = 'fas fa-check-circle';
@@ -1790,6 +1701,7 @@
             notificationMessage.textContent = message;
             notification.classList.remove('hidden');
             
+            // Auto hide after 5 seconds
             setTimeout(hideNotification, 5000);
         }
 
@@ -1800,9 +1712,10 @@
         // Initialize
         console.log('Smart Garbage Collector App Loaded');
         
+        // Auto-hide notification on click outside
         document.addEventListener('click', (e) => {
             if (!notification.contains(e.target) && !notification.classList.contains('hidden')) {
-                hideNotification(); 
+                hideNotification();
             }
         });
     </script>
